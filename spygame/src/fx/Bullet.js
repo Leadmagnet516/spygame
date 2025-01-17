@@ -1,38 +1,37 @@
 import { useEffect, useState } from "react";
-import { GRID_SIZE } from "../CONSTANTS";
+import {
+  GRID_SIZE,
+  EVENT_BULLET_COLLISION
+ } from "../CONSTANTS";
 import { pixToPos } from "../METHODS";
 
-const BULLET_SPEED = 10;
-const TICK_SPEED = 5;
+const BULLET_SPEED = 16;
+const TICK_SPEED = 16;
 
-export default function Bullet(params) {
-  let { initPos, id, aim, boundaryCollision, sceneryCollision, enemyCollision } = params;
+export default function Bullet(props) {
+  let { initPos, id, aim, boundaryCollision, sceneryCollision, enemyCollision } = props;
   const [ loc, setLoc ] = useState({
     left: initPos.x * GRID_SIZE + GRID_SIZE / 2,
     top: initPos.y * GRID_SIZE + GRID_SIZE / 2
   })
-  const [ visibility, setVisibility ] = useState("visible");
 
   useEffect(() => {
-    const moveBullet = () => {
+    const moveBullet = () => { 
       const newLeft = loc.left + Math.cos(aim) * BULLET_SPEED;
       const newTop = loc.top + Math.sin(aim) * BULLET_SPEED;
       const pos = pixToPos({left: newLeft, top: newTop});
-      if (boundaryCollision(pos)) {
-        console.log(`Bullet ${id} has gone out of bounds`);
-        setVisibility("hidden");
-        return() => {}
+      const enemyCollisionId = enemyCollision(pos);
+      
+      if (enemyCollisionId) {
+        dispatchEvent(new CustomEvent(EVENT_BULLET_COLLISION, {detail: {bulletId: id, victimId: enemyCollisionId}}))
+        return() => {};
       }
-      if (sceneryCollision(pos)) {
-        console.log(`Bullet ${id} has hit a piece of scenery`);
-        setVisibility("hidden");
-        return() => {}
+
+      if (boundaryCollision(pos) || sceneryCollision(pos)) {
+        dispatchEvent(new CustomEvent(EVENT_BULLET_COLLISION, {detail: {bulletId: id}}))
+        return() => {};
       }
-      if (enemyCollision(pos)) {
-        console.log(`Bullet ${id} has hit an enemy`);
-        setVisibility("hidden");
-        return() => {}
-      }
+
       setLoc({left: newLeft, top: newTop});
     }
 
@@ -42,8 +41,7 @@ export default function Bullet(params) {
   return (
     <div className="bullet" style={{
       left: `${loc.left}px`,
-      top: `${loc.top}px`,
-      visibility: {visibility}
+      top: `${loc.top}px`
     }}></div>
   );
 }

@@ -1,20 +1,33 @@
 import Hero from "./entities/Hero";
-import Enemy from "./entities/Enemy";
-import Bullet from "./fx/Bullet";
+import CharacterLayer from "./layers/CharacterLayer";
+import SceneryLayer from "./layers/SceneryLayer";
+import FxLayer from "./layers/FxLayer";
+
 import {
   GRID_SIZE,
   GRID_WIDTH,
   GRID_HEIGHT
  } from "./CONSTANTS";
- import { SCENERY, ENEMIES } from "./levels/level1";
-import { useRef, useState } from 'react';
+ import { SCENERY, npcs } from "./levels/level1";
+import { useRef } from 'react';
 
 const GAMESTATE_WIDTH = GRID_WIDTH * GRID_SIZE;
 const GAMESTATE_HEIGHT = GRID_HEIGHT * GRID_SIZE;
 
+const REF_HERO = "Hero";
+const REF_CHARACTERS = "Characters";
+const REF_SCENERY = "Scenery";
+const REF_FX = "Effects";
+
 export default function GameState() {
+  console.log(`Mounting GameState at ${GAMESTATE_WIDTH} / ${GAMESTATE_HEIGHT}`)
+  const heroRef = useRef(REF_HERO);
+  const characterLayerRef = useRef(REF_CHARACTERS);
+  const sceneryLayerRef = useRef(REF_SCENERY);
+  const fxLayerRef = useRef(REF_FX);
+
   const initHeroPos = {x: 20, y: 20};
-  const [fx, setFx ] = useState([]);
+  let npcPositions = [];
 
   const boundaryCollision = pos => {
     let collision = false;
@@ -44,64 +57,28 @@ export default function GameState() {
 
 
   const enemyCollision = pos => {
-    let collision = false;
+    let collision = '';
 
-    ENEMIES.forEach(enm => {
-      if (pos.x === enm.x && pos.y === enm.y ) {
-        collision = true;
+    npcPositions.forEach(npc => {
+      if (pos.x === npc.pos.x && pos.y === npc.pos.y ) {
+        collision = npc.id;
       }
     })
 
     return collision;
   }
 
-  const fireWeapon = (pos, aim) => {
-    setFx(fx.concat(
-      {
-        type: "Bullet",
-        initPos: pos,
-        aim
-      }
-    ));
+  const reportNpcPositions = npcPos => {
+    console.log('npcs reported at', npcPos);
+    npcPositions = npcPos;
   }
 
   return (
     <div className="game-state" style={{width: `${GAMESTATE_WIDTH}px`, height: `${GAMESTATE_HEIGHT}px`}}>
-    <Hero initPos={initHeroPos} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} fireWeapon={fireWeapon}></Hero>
-      <div key="enemy_layer">
-        {
-          ENEMIES.map((enm, idx) => {
-            return (
-              <Enemy key={`enemy_${idx}`} initPos={enm}></Enemy>
-            )
-          })
-        }
-      </div>
-      <div key="scenery_layer">
-        {
-          SCENERY.map((scn, idx) => {
-            return (
-              <div className="scenery" key={`scenery${idx}`} style={{
-                width: `${GRID_SIZE}px`,
-                height: `${GRID_SIZE}px`,
-                position: "absolute",
-                left: `${scn.x * GRID_SIZE}px`,
-                top: `${scn.y * GRID_SIZE}px`
-              }}></div>
-            )
-          })
-        }
-      </div>
-      <div key="fx_layer">
-        {
-          fx.map((fxi, idx) => {
-            console.log(`Bullet fx_${idx} fired`)
-            return (
-              <Bullet initPos={fxi.initPos} aim={fxi.aim} id={`fx_${idx}`} key={`fx_${idx}`} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} enemyCollision={enemyCollision}></Bullet>
-            )
-          })
-        }
-      </div>
+      <Hero ref={heroRef} initPos={initHeroPos} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision}></Hero>
+      <CharacterLayer ref={characterLayerRef} npcs={npcs} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} reportNpcPositions={reportNpcPositions}></CharacterLayer>
+      <SceneryLayer ref={sceneryLayerRef} scenery={SCENERY}></SceneryLayer>
+      <FxLayer ref={fxLayerRef} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} enemyCollision={enemyCollision}></FxLayer>
     </div>
   );
 }

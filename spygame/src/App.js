@@ -1,5 +1,5 @@
 import './App.css';
-import GameState from './ui/GameState'
+import GameState from './GameState'
 
 function App() {
   console.log('Mounting App');

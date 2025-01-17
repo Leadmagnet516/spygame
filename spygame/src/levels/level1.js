@@ -8,8 +8,8 @@ export const SCENERY = [
   {x: 11, y: 10},
 ]
 
-export const ENEMIES = [
-  {x: 58, y: 25},
-  {x: 9, y: 35},
-  {x: 49, y: 42}
+export const npcs = [
+  {x: 58, y: 25, id: 'npc_0'},
+  {x: 9, y: 35, id: 'npc_1'},
+  {x: 49, y: 42, id: 'npc_2'}
 ]

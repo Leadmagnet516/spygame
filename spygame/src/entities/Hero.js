@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import {
-  GRID_SIZE
+  GRID_SIZE,
+  EVENT_FIRE_WEAPON
 } from "../CONSTANTS";
 
-export default function Hero(params) {
-  const { initPos, boundaryCollision, sceneryCollision, fireWeapon } = params;
+export default function Hero(props) {
+  const { initPos, boundaryCollision, sceneryCollision } = props;
   const [ pos, setPos ] = useState(initPos);
   const [ aim, setAim ] = useState(0);
 
@@ -17,17 +18,22 @@ export default function Hero(params) {
 
   useEffect(() => {
     const handleKeyDown = e => {
+      console.log(e.key);
       switch(e.key) {
         case "ArrowLeft" :
+        case "a" :
           updateLoc(-1, 0);
           break;
         case "ArrowRight" :
+        case "d" :
           updateLoc(1, 0);
           break;
         case "ArrowUp" :
+        case "w" :
           updateLoc(0, -1);
           break;
         case "ArrowDown" :
+        case "s" :
           updateLoc(0, 1);
           break;
         default :
@@ -50,7 +56,8 @@ export default function Hero(params) {
     }
 
     const handleMouseDown = e => {
-      fireWeapon(pos, aim);
+      //fireWeapon(pos, aim);
+      dispatchEvent(new CustomEvent(EVENT_FIRE_WEAPON, {detail: {pos, aim}}))
     }
 
     window.addEventListener("keydown", handleKeyDown);
