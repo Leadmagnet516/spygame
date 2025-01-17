@@ -2,10 +2,10 @@ import { GRID_SIZE } from "../CONSTANTS";
 import { randomPos } from "../METHODS";
 
 export default function Enemy(params) {
-  let { pos } = params;
+  let { initPos } = params;
 
-  if (!pos) {
-    pos = randomPos();
+  if (!initPos) {
+    initPos = randomPos();
   }
 
   return (
@@ -13,8 +13,8 @@ export default function Enemy(params) {
       width: `${GRID_SIZE}px`,
       height: `${GRID_SIZE}px`,
       position: "absolute",
-      left: `${pos.x * GRID_SIZE}px`,
-      top: `${pos.y * GRID_SIZE}px`
+      left: `${initPos.x * GRID_SIZE}px`,
+      top: `${initPos.y * GRID_SIZE}px`
     }}></div>
   );
 }
