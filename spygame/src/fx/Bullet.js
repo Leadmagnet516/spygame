@@ -7,6 +7,7 @@ import { pixToPos } from "../METHODS";
 
 const BULLET_SPEED = 16;
 const TICK_SPEED = 16;
+const BULLET_DAMAGE = 25;
 
 export default function Bullet(props) {
   let { initPos, id, aim, boundaryCollision, sceneryCollision, enemyCollision } = props;
@@ -23,7 +24,7 @@ export default function Bullet(props) {
       const enemyCollisionId = enemyCollision(pos);
       
       if (enemyCollisionId) {
-        dispatchEvent(new CustomEvent(EVENT_BULLET_COLLISION, {detail: {bulletId: id, victimId: enemyCollisionId}}))
+        dispatchEvent(new CustomEvent(EVENT_BULLET_COLLISION, {detail: {bulletId: id, victimId: enemyCollisionId, damage: BULLET_DAMAGE}}))
         return() => {};
       }
 

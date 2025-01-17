@@ -38,10 +38,11 @@ const FxLayer = (props, ref) => {
     }
 
     const handleBulletCollision = e => {
-      if (e.detail.victimId) {
-        dispatchEvent(new CustomEvent(EVENT_BULLET_HIT_ENEMY, {detail: {id: e.detail.victimId}}));
+      const { bulletId, victimId, damage } = e.detail;
+      if (victimId) {
+        dispatchEvent(new CustomEvent(EVENT_BULLET_HIT_ENEMY, {detail: {victimId, damage}}));
       }
-      destroyBullet(e.detail.bulletId);
+      destroyBullet(bulletId);
     }
 
     window.addEventListener(EVENT_FIRE_WEAPON, handleFireWeapon);

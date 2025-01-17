@@ -1,5 +1,5 @@
 import Hero from "./entities/Hero";
-import CharacterLayer from "./layers/CharacterLayer";
+import NpcLayer from "./layers/NpcLayer";
 import SceneryLayer from "./layers/SceneryLayer";
 import FxLayer from "./layers/FxLayer";
 
@@ -22,7 +22,7 @@ const REF_FX = "Effects";
 export default function GameState() {
   console.log(`Mounting GameState at ${GAMESTATE_WIDTH} / ${GAMESTATE_HEIGHT}`)
   const heroRef = useRef(REF_HERO);
-  const characterLayerRef = useRef(REF_CHARACTERS);
+  const NpcLayerRef = useRef(REF_CHARACTERS);
   const sceneryLayerRef = useRef(REF_SCENERY);
   const fxLayerRef = useRef(REF_FX);
 
@@ -69,14 +69,13 @@ export default function GameState() {
   }
 
   const reportNpcPositions = npcPos => {
-    console.log('npcs reported at', npcPos);
     npcPositions = npcPos;
   }
 
   return (
     <div className="game-state" style={{width: `${GAMESTATE_WIDTH}px`, height: `${GAMESTATE_HEIGHT}px`}}>
       <Hero ref={heroRef} initPos={initHeroPos} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision}></Hero>
-      <CharacterLayer ref={characterLayerRef} npcs={npcs} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} reportNpcPositions={reportNpcPositions}></CharacterLayer>
+      <NpcLayer ref={NpcLayerRef} npcs={npcs} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} reportNpcPositions={reportNpcPositions}></NpcLayer>
       <SceneryLayer ref={sceneryLayerRef} scenery={SCENERY}></SceneryLayer>
       <FxLayer ref={fxLayerRef} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} enemyCollision={enemyCollision}></FxLayer>
     </div>

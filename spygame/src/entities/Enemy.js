@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 
 const ENEMY_TICK_SPEED = 2000;
 const LETHARGY = 2;
+const BASE_HITPOINTS = 100;
 
 export default function Enemy(props) {
   const { initPos, id, boundaryCollision, sceneryCollision} = props;
   const [ pos, setPos ] = useState(initPos);
   const [ flash, setFlash ] = useState(false);
+  const [ health, setHealth ] = useState(BASE_HITPOINTS);
 
   const updateLoc = (h = 0, v = 0) => {
     const newPos =  {x: pos.x + h, y: pos.y + v};
@@ -18,8 +20,10 @@ export default function Enemy(props) {
     }
   }
 
-  const hitByBullet = () => {
-    console.log(`Oh no! Enemy ${id} has been hit by a bullet!`);
+  const hitByBullet = damage => {
+    console.log(`Oh no! Enemy ${id} has been hit by a bullet for ${damage} damage!`);
+    setHealth(health - damage);
+    if(health <= 0) console.log(`Enemy ${id} has died.`)
     setFlash(true);
     setTimeout(() => {
       setFlash(false);
@@ -40,8 +44,9 @@ export default function Enemy(props) {
     setTimeout(moveSelf, ENEMY_TICK_SPEED);
 
     const handleBulletHitEnemy = e => {
-      if (e.detail.id === id) {
-        hitByBullet();
+      const { victimId, damage } = e.detail;
+      if (victimId === id) {
+        hitByBullet(damage);
       }
     }
 
@@ -58,7 +63,8 @@ export default function Enemy(props) {
       position: "absolute",
       left: `${pos.x * GRID_SIZE}px`,
       top: `${pos.y * GRID_SIZE}px`,
-      backgroundColor: `${flash ? '#fff' : '#f00'}`
+      backgroundColor: `${flash ? '#fff' : '#f00'}`,
+      opacity: `${health / 100 * .5 + .5}`
     }}></div>
   );
 }

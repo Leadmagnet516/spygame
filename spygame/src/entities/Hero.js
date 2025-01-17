@@ -56,7 +56,6 @@ export default function Hero(props) {
     }
 
     const handleMouseDown = e => {
-      //fireWeapon(pos, aim);
       dispatchEvent(new CustomEvent(EVENT_FIRE_WEAPON, {detail: {pos, aim}}))
     }
 

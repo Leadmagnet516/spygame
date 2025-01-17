@@ -13,7 +13,7 @@ import { useEffect } from "react";
 const GAMESTATE_WIDTH = GRID_WIDTH * GRID_SIZE;
 const GAMESTATE_HEIGHT = GRID_HEIGHT * GRID_SIZE;
 
-export default function CharacterLayer(props) {
+export default function NpcLayer(props) {
   const { npcs, boundaryCollision, sceneryCollision, reportNpcPositions } = props;
   const npcPositions = []
 
