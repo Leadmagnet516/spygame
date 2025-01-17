@@ -1,0 +1,51 @@
+body {
+  background-color: #282c34;
+  padding: 0;
+}
+
+.App {
+  /* text-align: center; */
+}
+
+.App-header {
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.game-state {
+  background-color: #666;
+  position: relative;
+}
+
+.hero {
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  position: absolute;
+}
+
+.enemy {
+  width: 20px;
+  height: 20px;
+  background-color: #f00;
+  position: absolute;
+}
+
+.scenery {
+  background-color: #000;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
