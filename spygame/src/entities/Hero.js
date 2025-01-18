@@ -3,6 +3,7 @@ import {
   GRID_SIZE,
   EVENT_FIRE_WEAPON
 } from "../CONSTANTS";
+import spySprite from '../images/spy.png'
 
 export default function Hero(props) {
   const { initPos, boundaryCollision, sceneryCollision } = props;
@@ -73,7 +74,9 @@ export default function Hero(props) {
     <div className="hero" style={{
       left: `${pos.x * GRID_SIZE}px`,
       top: `${pos.y * GRID_SIZE}px`,
-      transform: `rotate(${aim}rad)`
-    }}></div>
+      /* transform: `rotate(${aim}rad)` */
+    }}>
+      <img src={spySprite} alt="hero" width={GRID_SIZE} height={GRID_SIZE}></img>
+    </div>
   );
 }

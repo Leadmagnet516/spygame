@@ -1,8 +1,9 @@
 import { EVENT_BULLET_HIT_ENEMY, EVENT_NPC_MOVED, GRID_SIZE } from "../CONSTANTS";
 import { randomIntBetween } from "../METHODS";
 import { useEffect, useState } from "react";
+import enemySprite from '../images/enemy.png'
 
-const ENEMY_TICK_SPEED = 2000;
+const ENEMY_TICK_SPEED = 100;
 const LETHARGY = 2;
 const BASE_HITPOINTS = 100;
 
@@ -63,8 +64,10 @@ export default function Enemy(props) {
       position: "absolute",
       left: `${pos.x * GRID_SIZE}px`,
       top: `${pos.y * GRID_SIZE}px`,
-      backgroundColor: `${flash ? '#fff' : '#f00'}`,
+      backgroundColor: `${flash ? '#fff' : 'transparent'}`,
       opacity: `${health / 100 * .5 + .5}`
-    }}></div>
+    }}>
+      <img src={enemySprite} alt="hero" width={GRID_SIZE} height={GRID_SIZE}></img>
+    </div>
   );
 }

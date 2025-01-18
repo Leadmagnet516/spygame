@@ -26,7 +26,7 @@ export default function GameState() {
   const sceneryLayerRef = useRef(REF_SCENERY);
   const fxLayerRef = useRef(REF_FX);
 
-  const initHeroPos = {x: 20, y: 20};
+  const initHeroPos = {x: 3, y: 3};
   let npcPositions = [];
 
   const boundaryCollision = pos => {
