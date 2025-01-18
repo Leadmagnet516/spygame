@@ -6,7 +6,7 @@ import {
 import { pixToPos } from "../METHODS";
 
 const BULLET_SPEED = 16;
-const TICK_SPEED = 16;
+const TICK_DURATION = 16;
 const BULLET_DAMAGE = 25;
 
 export default function Bullet(props) {
@@ -36,7 +36,7 @@ export default function Bullet(props) {
       setLoc({left: newLeft, top: newTop});
     }
 
-    setTimeout(moveBullet, TICK_SPEED);
+    setTimeout(moveBullet, TICK_DURATION);
   });
 
   return (

@@ -73,7 +73,7 @@ export default function GameState() {
   }
 
   return (
-    <div className="game-state" style={{width: `${GAMESTATE_WIDTH}px`, height: `${GAMESTATE_HEIGHT}px`}}>
+    <div className="game-state" style={{width: `${GAMESTATE_WIDTH}px`, height: `${GAMESTATE_HEIGHT}px`, position: 'absolute'}}>
       <Hero ref={heroRef} initPos={initHeroPos} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision}></Hero>
       <NpcLayer ref={NpcLayerRef} npcs={npcs} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} reportNpcPositions={reportNpcPositions}></NpcLayer>
       <SceneryLayer ref={sceneryLayerRef} scenery={SCENERY}></SceneryLayer>

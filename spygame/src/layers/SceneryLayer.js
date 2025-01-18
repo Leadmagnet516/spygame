@@ -12,7 +12,8 @@ export default function SceneryLayer(props) {
   return (
     <div className="scenery_layer" style={{
       width: `${GAMESTATE_WIDTH}px`,
-      height: `${GAMESTATE_HEIGHT}px`
+      height: `${GAMESTATE_HEIGHT}px`,
+      position: 'absolute'
     }}>
       {
         scenery.map((scn, idx) => {

@@ -42,7 +42,7 @@ export default function NpcLayer(props) {
     })
   });
   return (
-    <div className="character_layer" style={{
+    <div className="npc-layer" style={{
       width: `${GAMESTATE_WIDTH}px`,
       height: `${GAMESTATE_HEIGHT}px`
     }}>

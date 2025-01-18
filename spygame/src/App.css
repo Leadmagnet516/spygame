@@ -14,19 +14,21 @@ body {
 
 .game-state {
   background-color: #666;
-  position: relative;
+  position: absolute;
+}
+
+.npc-layer, .scenery-layer, .fx-layer {
+  position: absolute;
 }
 
 .hero {
   position: absolute;
-  transition: all .125s ease-in-out;
-  -webkit-transition: all .125s ease-in-out;
+  transition: left .1s linear, top .1s linear;
 }
 
 .enemy {
   position: absolute;
-  transition: all .125s ease-in-out;
-  -webkit-transition: all .125s ease-in-out;
+  transition: left .1s linear, top .1s linear;
 }
 
 .scenery {
@@ -38,19 +40,4 @@ body {
   height: 5px;
   background-color: orange;
   position: absolute;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }

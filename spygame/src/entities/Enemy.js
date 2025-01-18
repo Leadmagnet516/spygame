@@ -3,7 +3,7 @@ import { randomIntBetween } from "../METHODS";
 import { useEffect, useState } from "react";
 import enemySprite from '../images/enemy.png'
 
-const ENEMY_TICK_SPEED = 100;
+const ENEMY_TICK_DURATION = 100;
 const LETHARGY = 2;
 const BASE_HITPOINTS = 100;
 
@@ -13,7 +13,7 @@ export default function Enemy(props) {
   const [ flash, setFlash ] = useState(false);
   const [ health, setHealth ] = useState(BASE_HITPOINTS);
 
-  const updateLoc = (h = 0, v = 0) => {
+  const updatePos = (h = 0, v = 0) => {
     const newPos =  {x: pos.x + h, y: pos.y + v};
     if(!boundaryCollision(newPos) && !sceneryCollision(newPos)) {
       setPos(newPos);
@@ -22,18 +22,17 @@ export default function Enemy(props) {
   }
 
   const hitByBullet = damage => {
-    console.log(`Oh no! Enemy ${id} has been hit by a bullet for ${damage} damage!`);
     setHealth(health - damage);
     if(health <= 0) console.log(`Enemy ${id} has died.`)
     setFlash(true);
     setTimeout(() => {
       setFlash(false);
-    }, 100);
+    }, 50);
   }
 
   const moveSelf = () => {
     if(Math.random() * LETHARGY < 1) {
-      updateLoc(randomIntBetween(-1, 1), randomIntBetween(-1, 1));
+      updatePos(randomIntBetween(-1, 1), randomIntBetween(-1, 1));
     }
   }
 
@@ -42,7 +41,7 @@ export default function Enemy(props) {
   }
 
   useEffect(() => {
-    setTimeout(moveSelf, ENEMY_TICK_SPEED);
+    setTimeout(moveSelf, ENEMY_TICK_DURATION);
 
     const handleBulletHitEnemy = e => {
       const { victimId, damage } = e.detail;
@@ -64,8 +63,9 @@ export default function Enemy(props) {
       position: "absolute",
       left: `${pos.x * GRID_SIZE}px`,
       top: `${pos.y * GRID_SIZE}px`,
-      backgroundColor: `${flash ? '#fff' : 'transparent'}`,
-      opacity: `${health / 100 * .5 + .5}`
+      /* backgroundColor: `${flash ? '#fff' : 'transparent'}`,
+      opacity: `${health / 100 * .5 + .5}` */
+      filter: `${flash ? 'brightness(1.5)' : 'none'}`
     }}>
       <img src={enemySprite} alt="hero" width={GRID_SIZE} height={GRID_SIZE}></img>
     </div>

@@ -56,7 +56,8 @@ const FxLayer = (props, ref) => {
   return (
     <div className="fx_layer" style={{
       width: `${GAMESTATE_WIDTH}px`,
-      height: `${GAMESTATE_HEIGHT}px`
+      height: `${GAMESTATE_HEIGHT}px`,
+      position: 'absolute'
     }}>
     {
       fx.map((fxi) => {
