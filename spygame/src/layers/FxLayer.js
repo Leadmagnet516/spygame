@@ -4,13 +4,13 @@ import {
   GRID_HEIGHT,
   EVENT_FIRE_WEAPON,
   EVENT_BULLET_COLLISION,
-  EVENT_BULLET_HIT_ENEMY
+  EVENT_NPC_HIT
  } from "../CONSTANTS";
 import Bullet from "../fx/Bullet";
 import { useEffect, useState } from "react";
 
-const GAMESTATE_WIDTH = GRID_WIDTH * GRID_SIZE;
-const GAMESTATE_HEIGHT = GRID_HEIGHT * GRID_SIZE;
+const GameScreen_WIDTH = GRID_WIDTH * GRID_SIZE;
+const GameScreen_HEIGHT = GRID_HEIGHT * GRID_SIZE;
 
 const FxLayer = (props, ref) => {
   const { boundaryCollision, sceneryCollision, enemyCollision } = props;
@@ -40,7 +40,7 @@ const FxLayer = (props, ref) => {
     const handleBulletCollision = e => {
       const { bulletId, victimId, damage } = e.detail;
       if (victimId) {
-        dispatchEvent(new CustomEvent(EVENT_BULLET_HIT_ENEMY, {detail: {victimId, damage}}));
+        dispatchEvent(new CustomEvent(EVENT_NPC_HIT, {detail: {id: victimId, damage}}));
       }
       destroyBullet(bulletId);
     }
@@ -55,8 +55,8 @@ const FxLayer = (props, ref) => {
   
   return (
     <div className="fx_layer" style={{
-      width: `${GAMESTATE_WIDTH}px`,
-      height: `${GAMESTATE_HEIGHT}px`,
+      width: `${GameScreen_WIDTH}px`,
+      height: `${GameScreen_HEIGHT}px`,
       position: 'absolute'
     }}>
     {

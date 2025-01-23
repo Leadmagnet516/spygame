@@ -1,9 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   GRID_SIZE,
-  EVENT_FIRE_WEAPON
+  EVENT_FIRE_WEAPON,
+  GAME_WIDTH
 } from "../CONSTANTS";
 import spySprite from '../images/spy.png'
+//import { ThemeContext } from "../App";
+import { GameContext } from '../App';
 
 const HERO_TICK_DURATION = 100;
 
@@ -11,6 +14,8 @@ export default function Hero(props) {
   const { initPos, boundaryCollision, sceneryCollision } = props;
   const [ pos, setPos ] = useState(initPos);
   const [ aim, setAim ] = useState(0);
+
+  const {xOffset, yOffset} = useContext(GameContext);
 
   // TRACKING MOVEMENT KEYS HELD DOWN
   const [ leftKeyDown, setLeftKeyDown ] = useState(false);
@@ -104,8 +109,8 @@ export default function Hero(props) {
   }
 
   const handleMouseMove = e => {
-    const ox = e.clientX - pos.x * GRID_SIZE - GRID_SIZE / 2;
-    const oy = e.clientY - pos.y * GRID_SIZE - GRID_SIZE / 2;
+    const ox = e.clientX - xOffset - pos.x * GRID_SIZE - GRID_SIZE / 2;
+    const oy = e.clientY - yOffset - pos.y * GRID_SIZE - GRID_SIZE / 2;
     let rot = Math.atan(oy/ox);
     if (ox < 0) {
       if (oy < 0) {
@@ -142,9 +147,10 @@ export default function Hero(props) {
     <div className="hero" style={{
       left: `${pos.x * GRID_SIZE}px`,
       top: `${pos.y * GRID_SIZE}px`,
-      /* transform: `rotate(${aim}rad)` */
     }}>
       <img src={spySprite} alt="hero" width={GRID_SIZE} height={GRID_SIZE}></img>
+      {/* <br></br><span style={{width: "48px", fontSize: "12px", textAlign: "center", color: "#FFFFFF"}}>{`(${pos.x}, ${pos.y})`}</span>
+      <br></br><span style={{width: "48px", fontSize: "12px", textAlign: "center", color: "#FFFFFF"}}>{`${Math.round(aim / Math.PI / 2 * 360)} deg`}</span> */}
     </div>
   );
 }

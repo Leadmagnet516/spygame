@@ -7,8 +7,8 @@ export const randomIntBetween = (min, max) => {
 
 export const randomPos = () => {
   return {
-    x: randomIntBetween(0, GRID_WIDTH),
-    y: randomIntBetween(0, GRID_HEIGHT)
+    x: randomIntBetween(0, GRID_WIDTH - 1),
+    y: randomIntBetween(0, GRID_HEIGHT - 1)
   }
 }
 

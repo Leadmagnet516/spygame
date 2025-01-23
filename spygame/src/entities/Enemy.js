@@ -1,29 +1,35 @@
-import { EVENT_BULLET_HIT_ENEMY, EVENT_NPC_MOVED, GRID_SIZE } from "../CONSTANTS";
+import {
+  GRID_SIZE } from "../CONSTANTS";
 import { randomIntBetween } from "../METHODS";
 import { useEffect, useState } from "react";
 import enemySprite from '../images/enemy.png'
 
-const ENEMY_TICK_DURATION = 100;
+const ENEMY_TICK_DURATION = 1000;
 const LETHARGY = 2;
 const BASE_HITPOINTS = 100;
 
 export default function Enemy(props) {
-  const { initPos, id, boundaryCollision, sceneryCollision} = props;
+  const { initPos, id, damageTaken, boundaryCollision, sceneryCollision, handleNpcMoved, handleNpcDead} = props;
+  const [ alive, setAlive ] = useState(true);
   const [ pos, setPos ] = useState(initPos);
   const [ flash, setFlash ] = useState(false);
   const [ health, setHealth ] = useState(BASE_HITPOINTS);
+  const [ intervalId, setIntervalId ] = useState(0);
+  const [ damageTotal, setDamageTotal ] = useState(0);
 
   const updatePos = (h = 0, v = 0) => {
     const newPos =  {x: pos.x + h, y: pos.y + v};
     if(!boundaryCollision(newPos) && !sceneryCollision(newPos)) {
       setPos(newPos);
-      reportPosition(newPos);
+      handleNpcMoved(id, newPos);
     }
   }
 
-  const hitByBullet = damage => {
+  const handleHit = damage => {
     setHealth(health - damage);
-    if(health <= 0) console.log(`Enemy ${id} has died.`)
+    if(health <= 0) {
+      setAlive(false);
+    }
     setFlash(true);
     setTimeout(() => {
       setFlash(false);
@@ -36,25 +42,25 @@ export default function Enemy(props) {
     }
   }
 
-  const reportPosition = pos => {
-    dispatchEvent(new CustomEvent(EVENT_NPC_MOVED, {detail: {id, pos}}));
+  if(!intervalId) {
+    setIntervalId(setInterval(moveSelf, ENEMY_TICK_DURATION));
   }
 
   useEffect(() => {
-    setTimeout(moveSelf, ENEMY_TICK_DURATION);
-
-    const handleBulletHitEnemy = e => {
-      const { victimId, damage } = e.detail;
-      if (victimId === id) {
-        hitByBullet(damage);
-      }
+    if(!alive) {
+      handleNpcDead(id);
+      clearInterval(intervalId);
+      return(() => {})
     }
+    
+  }, [alive])
 
-    window.addEventListener(EVENT_BULLET_HIT_ENEMY, handleBulletHitEnemy);
-    return (() => {
-      window.removeEventListener(EVENT_BULLET_HIT_ENEMY, handleBulletHitEnemy);
-    })
-  })
+  useEffect(() => {
+    if (alive && damageTaken > damageTotal) {
+      handleHit(20);
+      setDamageTotal(damageTaken);
+    }
+  }, [damageTaken])
 
   return (
     <div className="enemy" style={{
@@ -63,9 +69,8 @@ export default function Enemy(props) {
       position: "absolute",
       left: `${pos.x * GRID_SIZE}px`,
       top: `${pos.y * GRID_SIZE}px`,
-      /* backgroundColor: `${flash ? '#fff' : 'transparent'}`,
-      opacity: `${health / 100 * .5 + .5}` */
-      filter: `${flash ? 'brightness(1.5)' : 'none'}`
+      filter: `${flash ? 'brightness(1.5)' : 'none'}`,
+      transform: `${alive ? 'none' : 'rotate(90deg)'}`,
     }}>
       <img src={enemySprite} alt="hero" width={GRID_SIZE} height={GRID_SIZE}></img>
     </div>
