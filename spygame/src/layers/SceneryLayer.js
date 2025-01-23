@@ -1,18 +1,15 @@
 import {
   GRID_SIZE,
-  GRID_WIDTH,
-  GRID_HEIGHT
+  GAME_WIDTH,
+  GAME_HEIGHT
  } from "../CONSTANTS";
-
-const GameScreen_WIDTH = GRID_WIDTH * GRID_SIZE;
-const GameScreen_HEIGHT = GRID_HEIGHT * GRID_SIZE;
 
 export default function SceneryLayer(props) {
   const { scenery } = props;
   return (
     <div className="scenery_layer" style={{
-      width: `${GameScreen_WIDTH}px`,
-      height: `${GameScreen_HEIGHT}px`,
+      width: `${GAME_WIDTH}px`,
+      height: `${GAME_HEIGHT}px`,
       position: 'absolute'
     }}>
       {
@@ -22,8 +19,8 @@ export default function SceneryLayer(props) {
               width: `${GRID_SIZE}px`,
               height: `${GRID_SIZE}px`,
               position: "absolute",
-              left: `${scn.x * GRID_SIZE}px`,
-              top: `${scn.y * GRID_SIZE}px`
+              left: `${scn.pos.x * GRID_SIZE}px`,
+              top: `${scn.pos.y * GRID_SIZE}px`
             }}></div>
           )
         })

@@ -96,6 +96,19 @@ body {
   background-color: #000;
 }
 
+.fov-cone {
+  position: absolute;
+  
+}
+
+.fov-boundary {
+  height: 2px;
+  position: absolute;
+  left: 0;
+  background-color: #000;
+  transform-origin: center left;
+}
+
 .bullet {
   width: 5px;
   height: 5px;

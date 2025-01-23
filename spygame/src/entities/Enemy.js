@@ -1,5 +1,8 @@
 import {
-  GRID_SIZE } from "../CONSTANTS";
+  GRID_SIZE,
+  ENTITY_UPDATE,
+  ENTITY_MOOD
+ } from "../CONSTANTS";
 import { randomIntBetween } from "../METHODS";
 import { useEffect, useState } from "react";
 import enemySprite from '../images/enemy.png'
@@ -9,9 +12,10 @@ const LETHARGY = 2;
 const BASE_HITPOINTS = 100;
 
 export default function Enemy(props) {
-  const { initPos, id, damageTaken, boundaryCollision, sceneryCollision, handleNpcMoved, handleNpcDead} = props;
+  const { npc, damageTaken, boundaryCollision, sceneryCollision, updateFromNpc } = props;
+  const { id, fov, mood } = npc;
   const [ alive, setAlive ] = useState(true);
-  const [ pos, setPos ] = useState(initPos);
+  const [ pos, setPos ] = useState(npc.pos);
   const [ flash, setFlash ] = useState(false);
   const [ health, setHealth ] = useState(BASE_HITPOINTS);
   const [ intervalId, setIntervalId ] = useState(0);
@@ -21,7 +25,7 @@ export default function Enemy(props) {
     const newPos =  {x: pos.x + h, y: pos.y + v};
     if(!boundaryCollision(newPos) && !sceneryCollision(newPos)) {
       setPos(newPos);
-      handleNpcMoved(id, newPos);
+      updateFromNpc(id, ENTITY_UPDATE.MOVE, {pos: newPos});
     }
   }
 
@@ -42,13 +46,13 @@ export default function Enemy(props) {
     }
   }
 
-  if(!intervalId) {
+/*   if(!intervalId) {
     setIntervalId(setInterval(moveSelf, ENEMY_TICK_DURATION));
-  }
+  } */
 
   useEffect(() => {
     if(!alive) {
-      handleNpcDead(id);
+      updateFromNpc(id, ENTITY_UPDATE.DEAD);
       clearInterval(intervalId);
       return(() => {})
     }
@@ -62,17 +66,21 @@ export default function Enemy(props) {
     }
   }, [damageTaken])
 
+  let fovWidth = fov.range * GRID_SIZE;
+  let fovHeight = Math.sin(fov.field) * fov.range * GRID_SIZE;
   return (
     <div className="enemy" style={{
-      width: `${GRID_SIZE}px`,
-      height: `${GRID_SIZE}px`,
       position: "absolute",
       left: `${pos.x * GRID_SIZE}px`,
       top: `${pos.y * GRID_SIZE}px`,
       filter: `${flash ? 'brightness(1.5)' : 'none'}`,
-      transform: `${alive ? 'none' : 'rotate(90deg)'}`,
+      transform: `${alive ? 'none' : 'rotate(90deg)'}`
     }}>
       <img src={enemySprite} alt="hero" width={GRID_SIZE} height={GRID_SIZE}></img>
+      <div className="fov-cone" style={{left: `${GRID_SIZE/2}px`, top: `${4 - fovHeight/2}px`, width: `${fovWidth}px`, height: `${fovHeight}px`, display: `${alive ? "block" : "none"}`, transform: `rotate(${npc.aim}rad)`, transformOrigin: 'center left'}}>
+        <div className="fov-boundary" style={{top: `${fovHeight/2}px`, width: `${fovWidth}px`, transform: `rotate(${-fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.SUS ? "#AA0" : mood === ENTITY_MOOD.COMBAT ? "#F00" : "#0A0"}`}}></div>
+        <div className="fov-boundary" style={{top: `${fovHeight/2}px`, width: `${fovWidth}px`, transform: `rotate(${fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.SUS ? "#AA0" : mood === ENTITY_MOOD.COMBAT ? "#F00" : "#0A0"}`}}></div>
+      </div>
     </div>
   );
 }

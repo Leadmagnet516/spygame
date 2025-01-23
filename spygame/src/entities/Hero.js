@@ -2,8 +2,9 @@ import { useContext, useEffect, useState } from 'react';
 import {
   GRID_SIZE,
   EVENT_FIRE_WEAPON,
-  GAME_WIDTH
+  ENTITY_UPDATE
 } from "../CONSTANTS";
+import { angleBetween, posToPix } from '../METHODS';
 import spySprite from '../images/spy.png'
 //import { ThemeContext } from "../App";
 import { GameContext } from '../App';
@@ -11,7 +12,7 @@ import { GameContext } from '../App';
 const HERO_TICK_DURATION = 100;
 
 export default function Hero(props) {
-  const { initPos, boundaryCollision, sceneryCollision } = props;
+  const { initPos, boundaryCollision, sceneryCollision, updateFromHero } = props;
   const [ pos, setPos ] = useState(initPos);
   const [ aim, setAim ] = useState(0);
 
@@ -33,42 +34,44 @@ export default function Hero(props) {
         return {x: pos.x + h, y: pos.y + v};
       }
       return pos;
-    })
+    });
+
+    updateFromHero("hero", ENTITY_UPDATE.MOVE, {pos});
   }
 
   const handleKeyDown = e => {
-    if ((e.key === "ArrowLeft" || e.key === "a") && !leftKeyDown) {
+    if ((e.key === "ArrowLeft" || e.key === "a" || e.key === "A") && !leftKeyDown) {
       setLeftKeyDown(true);
       checkStartTick();
     }
-    if ((e.key === "ArrowRight" || e.key === "d") && !rightKeyDown) {
+    if ((e.key === "ArrowRight" || e.key === "d" || e.key === "D") && !rightKeyDown) {
       setRightKeyDown(true);
       checkStartTick();
     }
-    if ((e.key === "ArrowUp" || e.key === "w") && !upKeyDown) {
+    if ((e.key === "ArrowUp" || e.key === "w" || e.key === "W") && !upKeyDown) {
       setUpKeyDown(true);
       checkStartTick();
     }
-    if ((e.key === "ArrowDown" || e.key === "s") && !downKeyDown) {
+    if ((e.key === "ArrowDown" || e.key === "s" || e.key === "S") && !downKeyDown) {
       setDownKeyDown(true);
       checkStartTick();
     }
   }
 
   const handleKeyUp = e => {
-    if (e.key === "ArrowLeft" || e.key === "a") {
+    if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
       setLeftKeyDown(false);
       checkStopTick();
     }
-    if (e.key === "ArrowRight" || e.key === "d") {
+    if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
       setRightKeyDown(false);
       checkStopTick();
     }
-    if (e.key === "ArrowUp" || e.key === "w") {
+    if (e.key === "ArrowUp" || e.key === "w" || e.key === "W") {
       setUpKeyDown(false);
       checkStopTick();
     }
-    if (e.key === "ArrowDown" || e.key === "s") {
+    if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") {
       setDownKeyDown(false);
       checkStopTick();
     }
@@ -119,6 +122,8 @@ export default function Hero(props) {
         rot += Math.PI;
       }
     }
+
+    rot = angleBetween({x: pos.x * GRID_SIZE + GRID_SIZE / 2, y: pos.y * GRID_SIZE + GRID_SIZE / 2}, {x: e.clientX - xOffset, y: e.clientY - yOffset})
     setAim(rot);
   }
 

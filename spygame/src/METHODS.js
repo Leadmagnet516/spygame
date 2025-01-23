@@ -15,3 +15,37 @@ export const randomPos = () => {
 export const pixToPos = pix => {
   return {x: Math.floor(pix.left / GRID_SIZE ), y: Math.floor(pix.top / GRID_SIZE )}
 }
+
+export const posToPix = pos => {
+  return {
+    left: pos.x * GRID_SIZE,
+    top: pos.y * GRID_SIZE
+  }
+}
+
+export const radToDeg = rad => {
+  return rad / (Math.PI * 2) * 360;
+}
+
+export const angleBetween = (pos1, pos2) => {
+  const ox = pos2.x - pos1.x;
+  const oy = pos2.y - pos1.y;
+  let angle = Math.atan(oy/ox);
+
+  if (ox < 0) {
+    if (oy < 0) {
+      angle -= Math.PI;
+    } else {
+      angle += Math.PI;
+    }
+  }
+
+  return angle;
+}
+
+export const distanceBetween = (pos1, pos2) => {
+  const ox = pos2.x - pos1.x;
+  const oy = pos2.y - pos1.y;
+
+  return Math.sqrt(ox * ox + oy * oy);
+}

@@ -1,28 +1,45 @@
 export const Level = {
   Scenery: [
-    {x: 10, y: 10},
-    {x: 10, y: 11},
-    {x: 10, y: 12},
-    {x: 10, y: 13},
-    {x: 11, y: 10},
+    { pos: { x: 20, y: 10 } },
+    { pos: { x: 20, y: 11 } },
+    { pos: { x: 20, y: 12 } },
+    { pos: { x: 20, y: 13 } },
+    { pos: { x: 21, y: 10 } },
   ],
   Npcs: [
     {
       pos: {
         x: 8,
         y: 8
+      },
+      aim: 0,
+      fov: {
+        field: Math.PI / 3,
+        range: 20
       }
-    },
+    }/* ,
     {
       pos: {
         x: 20,
         y: 2
-      }},
+      },
+      aim: 2,
+      fov: {
+        field: Math.PI / 3,
+        range: 5
+      }
+    },
     {
       pos: {
         x: 4,
         y: 10
-      }}
+      },
+      aim: 3,
+      fov: {
+        field: Math.PI / 3,
+        range: 5
+      }
+    } */
   ],
   InitHero: {
     pos: {x: 3, y: 3}

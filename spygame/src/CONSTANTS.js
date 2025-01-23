@@ -7,6 +7,18 @@ export const GAME_HEIGHT = GRID_SIZE * GRID_HEIGHT;
 export const EVENT_FIRE_WEAPON = 'FireWeapon';
 export const EVENT_BULLET_COLLISION = 'BulletCollision';
 export const EVENT_NPC_HIT = "HitByBullet";
-export const EVENT_NPC_MOVED = "NpcMoved";
 export const EVENT_SHOW_MODAL = "ShowModal";
 export const EVENT_NPC_DEAD = "NpcDead";
+
+export const ENTITY_UPDATE = {
+  MOVE: "Move",
+  DEAD: "Dead",
+  AIM: "Aim"
+}
+
+
+export const ENTITY_MOOD= {
+  OK: "OK",
+  SUS: "SUS",
+  COMBAT: "COMBAT"
+}
