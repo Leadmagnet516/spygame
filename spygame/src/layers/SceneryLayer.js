@@ -17,11 +17,11 @@ export default function SceneryLayer(props) {
         scenery.map((scn, idx) => {
           return (
             <div className="scenery" key={`scn_${idx}`} style={{
-              width: `${GRID_SIZE}px`,
-              height: `${GRID_SIZE}px`,
+              width: `${(scn.x2 - scn.x1 + 1) * GRID_SIZE}px`,
+              height: `${(scn.y2 - scn.y1 + 1) * GRID_SIZE}px`,
               position: "absolute",
-              left: `${scn.pos.x * GRID_SIZE}px`,
-              top: `${scn.pos.y * GRID_SIZE}px`
+              left: `${scn.x1 * GRID_SIZE}px`,
+              top: `${scn.y1 * GRID_SIZE}px`
             }}></div>
           )
         })

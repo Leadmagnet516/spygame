@@ -4,14 +4,14 @@ body {
 }
 
 #root {
-  width: 1344px;
-  height: 864px;
+  width: 1152px;
+  height: 768px;
 }
 
 .App {
   position: absolute;
   left: 50%;
-  margin-left: -672px;
+  margin-left: -576px;
   margin-top: 20px;
 }
 

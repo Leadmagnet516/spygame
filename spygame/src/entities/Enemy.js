@@ -15,7 +15,7 @@ const MAX_AIM_CHANGE = 1;
 const BASE_HITPOINTS = 100;
 
 export default function Enemy(props) {
-  const { npc, damageTaken, boundaryCollision, sceneryCollision, updateFromNpc } = props;
+  const { npc, damageTaken, boundaryCollision, sceneryCollision, heroCollision, updateFromNpc } = props;
   const { id, fov, mood } = npc;
   const [ alive, setAlive ] = useState(true);
   const [ pos, setPos ] = useState(npc.pos);
@@ -28,14 +28,13 @@ export default function Enemy(props) {
 
   const updatePos = (h = 0, v = 0) => {
     const newPos =  {x: pos.x + h, y: pos.y + v};
-    if(!boundaryCollision(newPos) && !sceneryCollision(newPos)) {
+    if(!boundaryCollision(newPos) && !sceneryCollision(newPos) && !heroCollision(newPos)) {
       setPos(newPos);
       updateFromNpc(id, ENTITY_UPDATE.MOVE, {pos: newPos});
     }
   }
 
   const updateAim = newAim => {
-    //console.log(`Aiming at ${newAim}`);
     setAim(newAim);
     updateFromNpc(id, ENTITY_UPDATE.AIM, {aim: newAim});
   }
@@ -85,11 +84,11 @@ export default function Enemy(props) {
   }, [damageTaken]);
 
   useEffect(() => {
-    if (gameStateActive && !intervalId) {
+   /*  if (gameStateActive && !intervalId) {
       setIntervalId(setInterval(doRandomStuff, ENEMY_TICK_DURATION));
     } else if (!gameStateActive && intervalId) {
       setIntervalId(clearInterval(intervalId));
-    }
+    } */
   }, [gameStateActive])
 
   let fovWidth = fov.range * GRID_SIZE;
@@ -99,7 +98,8 @@ export default function Enemy(props) {
       position: "absolute",
       left: `${pos.x * GRID_SIZE}px`,
       top: `${pos.y * GRID_SIZE}px`,
-      filter: `${flash ? 'brightness(1.5)' : 'none'}`,
+      //filter: `${flash ? 'brightness(1.5)' : 'brightness(1)'} ${npc.kind !== 'technician' ? "hue-rotate(90deg)" : "hue-rotate(0deg)"})`,
+      filter: `brightness(${flash ? "1.5" : "1"}) hue-rotate(${npc.kind === "technician" ? "90deg" : "0deg"})`,
       transform: `${alive ? 'none' : 'rotate(90deg)'}`
     }}>
       <img src={enemySprite} alt="hero" width={GRID_SIZE} height={GRID_SIZE}></img>

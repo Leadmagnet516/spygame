@@ -43,6 +43,19 @@ export const angleBetween = (pos1, pos2) => {
   return angle;
 }
 
+const normalize = (angle, arcLimit1) => {
+  angle -= arcLimit1;
+  while (angle < 0) angle += 2 * Math.PI;
+  return angle;
+}
+
+export const angleIsWithinArc = (angle, arcLimit1, arcLimit2) => {
+ const aNorm = normalize(angle, arcLimit1);
+ const a2Norm = normalize(arcLimit2, arcLimit1);
+ return ((a2Norm < Math.PI && aNorm < a2Norm) ||
+         (a2Norm > Math.PI && aNorm > a2Norm));
+}
+
 export const distanceBetween = (pos1, pos2) => {
   const ox = pos2.x - pos1.x;
   const oy = pos2.y - pos1.y;

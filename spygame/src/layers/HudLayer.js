@@ -3,7 +3,7 @@ import {
   GAME_HEIGHT,
   EVENT_OPEN_MODAL,
   EVENT_CHANGE_GAME_STATE,
-  GAME_STATES
+  GAME_STATE
 } from "../CONSTANTS";
 import { GameContext } from "../screens/GameScreen";
 import { useContext, useEffect } from "react";
@@ -24,11 +24,11 @@ export default function HudLayer(props) {
   }
 
   const dispatchPauseEvent = () => {
-    dispatchEvent(new CustomEvent(EVENT_CHANGE_GAME_STATE, {detail: { newState: GAME_STATES.PAUSED}}));
+    dispatchEvent(new CustomEvent(EVENT_CHANGE_GAME_STATE, {detail: { newState: GAME_STATE.PAUSED}}));
   }
 
   const dispatchResumeEvent = () => {
-    dispatchEvent(new CustomEvent(EVENT_CHANGE_GAME_STATE, {detail: { newState: GAME_STATES.ACTIVE}}));
+    dispatchEvent(new CustomEvent(EVENT_CHANGE_GAME_STATE, {detail: { newState: GAME_STATE.ACTIVE}}));
   }
 
   const handleKeyDown = e => {

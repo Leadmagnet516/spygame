@@ -4,11 +4,11 @@ import {
   GAME_HEIGHT,
   EVENT_OPEN_MODAL,
   EVENT_CLOSE_MODAL,
-  APP_STATES
+  APP_STATE
 } from './CONSTANTS';
 import SplashScreen from './screens/SplashScreen';
 import GameScreen from './screens/GameScreen';
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 /* const importScreen = screen => {
   console.log("importScreen", screen);
@@ -20,11 +20,11 @@ import { createContext, useEffect, useMemo, useState } from "react";
   )
 } */
 
-export const AppContext = createContext({appState: APP_STATES.NULL, xOffset: 0, yOffset: 0});
+export const AppContext = createContext({appState: APP_STATE.NULL, xOffset: 0, yOffset: 0});
 
 function App() {
-  const [ appState, setAppState ] = useState(APP_STATES.SPLASH);
-  const [ prevAppState, setPrevAppState ] = useState(APP_STATES.NULL);
+  const [ appState, setAppState ] = useState(APP_STATE.SPLASH);
+  const [ prevAppState, setPrevAppState ] = useState(APP_STATE.NULL);
   const [ xOffset, setXOffset ] = useState(0);
   const [ yOffset, setYOffset ] = useState(0);
 
@@ -34,11 +34,11 @@ function App() {
   }
 
   const splashToGame = () => {
-    toggleAppState(APP_STATES.GAME);
+    toggleAppState(APP_STATE.GAME);
   }
 
   const handleOpenModal = () => {
-    toggleAppState(APP_STATES.MODAL);
+    toggleAppState(APP_STATE.MODAL);
   }
 
   const handleCloseModal = () => {
@@ -73,13 +73,13 @@ function App() {
   return (
     <AppContext.Provider value={{appState, xOffset, yOffset}}>
       <div className="App" style={{width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`}}>
-          <div className="splash0screen-container container" style={{display: appState === APP_STATES.SPLASH ? "block" : "none"}}>
+          <div className="splash0screen-container container" style={{display: appState === APP_STATE.SPLASH ? "block" : "none"}}>
             <SplashScreen splashToGame={splashToGame}></SplashScreen>
           </div>
-            <div className="game-screen-container container" style={{display: appState === APP_STATES.GAME ? "block" : "none"}}>
-              <GameScreen gameStateActive={appState === APP_STATES.GAME} ></GameScreen>
+            <div className="game-screen-container container" style={{display: appState === APP_STATE.GAME ? "block" : "none"}}>
+              <GameScreen gameStateActive={appState === APP_STATE.GAME} ></GameScreen>
             </div>
-          <div className="modal-layer-container container" style={{display: appState === APP_STATES.MODAL ? "block" : "none"}}>
+          <div className="modal-layer-container container" style={{display: appState === APP_STATE.MODAL ? "block" : "none"}}>
             <button type="button" onClick={handleCloseModal}>Close Modal</button>
           </div>
       </div>

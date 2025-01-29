@@ -1,6 +1,6 @@
 export const GRID_SIZE = 48;
-export const GRID_WIDTH = 28;
-export const GRID_HEIGHT = 18;
+export const GRID_WIDTH = 24;
+export const GRID_HEIGHT = 16;
 export const GAME_WIDTH = GRID_SIZE * GRID_WIDTH;
 export const GAME_HEIGHT = GRID_SIZE * GRID_HEIGHT;
 
@@ -27,14 +27,14 @@ export const ENTITY_MOOD = {
   COMBAT: "COMBAT"
 }
 
-export const APP_STATES = {
+export const APP_STATE = {
   SPLASH: "SplashScreenState",
   GAME: "GameScreenState",
   MODAL: "ModalState",
   NULL: "NullState"
 }
 
-export const GAME_STATES = {
+export const GAME_STATE = {
   INACTIVE: "InactiveState",
   ACTIVE: "ActiveState",
   PAUSED: "PausedState",

@@ -1,19 +1,18 @@
-import { useContext, useEffect, useState } from 'react';
+import { forwardRef, useContext, useImperativeHandle, useEffect, useState } from 'react';
 import {
   GRID_SIZE,
   EVENT_FIRE_WEAPON,
   ENTITY_UPDATE
 } from "../CONSTANTS";
-import { angleBetween, posToPix } from '../METHODS';
+import { angleBetween } from '../METHODS';
 import spySprite from '../images/spy.png'
-//import { ThemeContext } from "../App";
 import { AppContext } from '../App';
 import { GameContext } from "../screens/GameScreen";
 
 const HERO_TICK_DURATION = 100;
 
-export default function Hero(props) {
-  const { initPos, boundaryCollision, sceneryCollision, updateFromHero } = props;
+const Hero = forwardRef((props, ref) => {
+  const { initPos, boundaryCollision, sceneryCollision, enemyCollision, updateFromHero } = props;
   const [ pos, setPos ] = useState(initPos);
   const [ aim, setAim ] = useState(0);
 
@@ -32,7 +31,7 @@ export default function Hero(props) {
   const updatePos = (h, v) => {
     setPos(pos => {
       const newPos =  {x: pos.x + h, y: pos.y + v};
-      if(!boundaryCollision(newPos) && !sceneryCollision(newPos)) {
+      if(!boundaryCollision(newPos) && !sceneryCollision(newPos) && !enemyCollision(newPos)) {
         return {x: pos.x + h, y: pos.y + v};
       }
       return pos;
@@ -163,4 +162,6 @@ export default function Hero(props) {
       <br></br><span style={{width: "48px", fontSize: "12px", textAlign: "center", color: "#FFFFFF"}}>{`${Math.round(aim / Math.PI / 2 * 360)} deg`}</span> */}
     </div>
   );
-}
+})
+
+export default Hero;

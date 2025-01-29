@@ -7,14 +7,15 @@ import {
  } from "../CONSTANTS";
  import {
   angleBetween,
-  distanceBetween
+  distanceBetween,
+  angleIsWithinArc
  } from "../METHODS";
  import Enemy from "../entities/Enemy";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { GameContext } from "../screens/GameScreen";
 
 const NpcLayer = forwardRef((props, ref) => {
-  const { initNpcs, susList, boundaryCollision, sceneryCollision, sceneryJuxt } = props;
+  const { initNpcs, susList, boundaryCollision, sceneryCollision, heroCollision, sceneryJuxt } = props;
   const [ npcs, setNpcs ] = useState(initNpcs.map((npc, idx) => {
     return {
       id: `npc_${idx}`,
@@ -53,47 +54,39 @@ const NpcLayer = forwardRef((props, ref) => {
       // CHECK WHETHER SUS IS OUTSIDE NPC'S VISUAL RANGE
       const dist = distanceBetween(sus.pos, npc.pos) 
       if (dist > npc.fov.range) {
-        //console.log(`${npc.id} has failed to spot ${sus.id} because of distance`);
         return;
       }
 
       // CHECK WHETHER SUS IS OUTSIDE NPC'S ANGLE OF VISION
       const dir = angleBetween(npc.pos, sus.pos);
-
-      let arc = Math.abs(npc.aim - dir) % Math.PI;
-      if (arc > Math.PI - npc.fov.field / 2) {
-        arc -= Math.PI * 2;
-      }
-
-      if (arc > npc.fov.field / 2) {
-        //console.log(`${npc.id} has failed to spot ${sus.id} at ${dir} while aiming ${npc.aim}`);
+      const halfFov = npc.fov.field / 2;
+      const npcArcLimit1 = npc.aim - halfFov;
+      const npcArcLimit2 = npc.aim + halfFov;
+      if(!angleIsWithinArc(dir, npcArcLimit1, npcArcLimit2)) {
         return;
       }
 
       // CHECK WHETHER NPC'S VIEW OF SUS IS BLOCKED BY SCENERY
       const scenery = sceneryJuxt(npc.pos);
-      const arcMin = .05;
       let blocked = false;
 
       scenery.forEach(scn => {
-        if (Math.abs(scn.dir - dir) < arcMin && scn.dist <= dist) {
+        if (scn.dist >= dist) return;
+
+        if (angleIsWithinArc(dir, scn.angle1, scn.angle2)) {
           blocked = true;
-          return;
         }
       })
 
       if (blocked) {
-        //console.log(`${npc.id} has failed to spot ${sus.id} because of scenery`);
         return;
       }
-      
+
       // ACT ON SUS-NESS!
-      //console.log(`${npc.id} has spotted ${sus.id} at direction ${dir}`)
       susInView.push(sus);
       switch(sus.type) {
         case "foe":
           npc.mood = ENTITY_MOOD.COMBAT;
-          //npc.aim = dir;
           break;
         case "hazard":
           npc.mood = ENTITY_MOOD.SUS;
@@ -162,7 +155,7 @@ const NpcLayer = forwardRef((props, ref) => {
       {
         npcs.map((npc, idx) => {
           return (
-            <Enemy key={npc.id} npc={npc} damageTaken={npc.damageTaken} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} updateFromNpc={updateFromNpc}></Enemy>
+            <Enemy key={npc.id} npc={npc} damageTaken={npc.damageTaken} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} heroCollision={heroCollision} updateFromNpc={updateFromNpc}></Enemy>
           )
         })
       }
