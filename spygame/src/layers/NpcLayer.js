@@ -11,6 +11,7 @@ import {
  } from "../METHODS";
  import Enemy from "../entities/Enemy";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import { GameContext } from "../screens/GameScreen";
 
 const NpcLayer = forwardRef((props, ref) => {
   const { initNpcs, susList, boundaryCollision, sceneryCollision, sceneryJuxt } = props;
@@ -52,7 +53,8 @@ const NpcLayer = forwardRef((props, ref) => {
       // CHECK WHETHER SUS IS OUTSIDE NPC'S VISUAL RANGE
       const dist = distanceBetween(sus.pos, npc.pos) 
       if (dist > npc.fov.range) {
-        return npc;
+        //console.log(`${npc.id} has failed to spot ${sus.id} because of distance`);
+        return;
       }
 
       // CHECK WHETHER SUS IS OUTSIDE NPC'S ANGLE OF VISION
@@ -64,7 +66,8 @@ const NpcLayer = forwardRef((props, ref) => {
       }
 
       if (arc > npc.fov.field / 2) {
-        return npc;
+        //console.log(`${npc.id} has failed to spot ${sus.id} at ${dir} while aiming ${npc.aim}`);
+        return;
       }
 
       // CHECK WHETHER NPC'S VIEW OF SUS IS BLOCKED BY SCENERY
@@ -75,29 +78,31 @@ const NpcLayer = forwardRef((props, ref) => {
       scenery.forEach(scn => {
         if (Math.abs(scn.dir - dir) < arcMin && scn.dist <= dist) {
           blocked = true;
-          return npc;
+          return;
         }
       })
 
       if (blocked) {
-        return npc;
+        //console.log(`${npc.id} has failed to spot ${sus.id} because of scenery`);
+        return;
       }
       
       // ACT ON SUS-NESS!
+      //console.log(`${npc.id} has spotted ${sus.id} at direction ${dir}`)
       susInView.push(sus);
       switch(sus.type) {
         case "foe":
           npc.mood = ENTITY_MOOD.COMBAT;
-          npc.aim = dir;
+          //npc.aim = dir;
           break;
         case "hazard":
           npc.mood = ENTITY_MOOD.SUS;
           break;
         default:
       }
-
-      return npc;
     })
+
+    return npc;
   }
 
   const updateFromNpc = (id, updateType, props) => {
@@ -134,13 +139,13 @@ const NpcLayer = forwardRef((props, ref) => {
     }));
   }
 
-  // EFFECTS
   useEffect(() => {
     npcs.forEach(npc => {
       checkSusList(npc);
     })
   }, [susList])
 
+  // LISTENERS
   useEffect(() => {
     window.addEventListener(EVENT_NPC_HIT, handleNpcHit);
     return(() => {
@@ -157,7 +162,7 @@ const NpcLayer = forwardRef((props, ref) => {
       {
         npcs.map((npc, idx) => {
           return (
-            <Enemy key={npc.id} npc={npc} mood={npc.mood} damageTaken={npcs[idx].damageTaken} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} updateFromNpc={updateFromNpc}></Enemy>
+            <Enemy key={npc.id} npc={npc} damageTaken={npc.damageTaken} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} updateFromNpc={updateFromNpc}></Enemy>
           )
         })
       }

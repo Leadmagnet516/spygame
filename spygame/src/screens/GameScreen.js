@@ -3,19 +3,22 @@ import NpcLayer from "../layers/NpcLayer";
 import SceneryLayer from "../layers/SceneryLayer";
 import FxLayer from "../layers/FxLayer";
 import HudLayer from "../layers/HudLayer";
-
 import {
   GRID_WIDTH,
   GRID_HEIGHT,
   GAME_WIDTH,
-  GAME_HEIGHT
+  GAME_HEIGHT,
+  GAME_STATES,
+  EVENT_CHANGE_GAME_STATE,
+  EVENT_OPEN_MODAL,
+  EVENT_CLOSE_MODAL
 } from "../CONSTANTS";
 import {
   angleBetween,
   distanceBetween
  } from "../METHODS";
 import { Level } from "../levels/level1";
-import { useEffect, useRef, useState } from 'react';
+import { createContext, useEffect, useRef, useState } from 'react';
 
 const REF_HERO = "Hero";
 const REF_CHARACTERS = "Characters";
@@ -23,7 +26,13 @@ const REF_SCENERY = "Scenery";
 const REF_FX = "Effects";
 const REF_HUD = "Hud";
 
-export default function GameScreen() {
+export const GameContext = createContext({ gameState: GAME_STATES.INACTIVE });
+
+export default function GameScreen( props ) {
+  const { gameStateActive } = props;
+  const [ gameState, setGameState ] = useState(gameStateActive ? GAME_STATES.ACTIVE : GAME_STATES.INACTIVE);
+  const [ prevGameState, setPrevGameState ] = useState(GAME_STATES.NULL);
+
   // DEFINE REFS
   const heroRef = useRef(REF_HERO);
   const NpcLayerRef = useRef(REF_CHARACTERS);
@@ -60,7 +69,6 @@ export default function GameScreen() {
 
     return collision;
   }
-
 
   const enemyCollision = pos => {
     const npcs = NpcLayerRef.current.getNpcs();
@@ -106,13 +114,52 @@ export default function GameScreen() {
     });
   }
 
+  // GAMESTATE MANAGEMENT
+  const handleChangeGamestate = e => {
+    setPrevGameState(gameState);
+    setGameState(e.detail.newState);
+  }
+
+  const handleOpenModal = e => {
+    if (gameState === GAME_STATES.ACTIVE) {
+      setPrevGameState(GAME_STATES.ACTIVE);
+      setGameState(GAME_STATES.PAUSED)
+    }
+  }
+
+  const handleCloseModal = e => {
+    if (prevGameState === GAME_STATES.ACTIVE) {
+      setPrevGameState(GAME_STATES.PAUSED);
+      setGameState(GAME_STATES.ACTIVE);
+    }
+  }
+
+  useEffect(() => {
+    setGameState(gameStateActive ? GAME_STATES.ACTIVE : GAME_STATES.INACTIVE);
+  }, [gameStateActive])
+
+  // LISTENERS
+  useEffect(() => {
+    window.addEventListener(EVENT_CHANGE_GAME_STATE, handleChangeGamestate);
+    window.addEventListener(EVENT_OPEN_MODAL, handleOpenModal);
+    window.addEventListener(EVENT_CLOSE_MODAL, handleCloseModal);
+
+    return () => {
+      window.removeEventListener(EVENT_CHANGE_GAME_STATE, handleChangeGamestate);
+      window.removeEventListener(EVENT_OPEN_MODAL, handleOpenModal);
+      window.removeEventListener(EVENT_CLOSE_MODAL, handleCloseModal);
+    }
+  });
+
   return (
-    <div className="game-screen" style={{width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`, position: 'absolute'}}>
-      <Hero ref={heroRef} initPos={InitHero.pos} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} updateFromHero={updateFromHero}></Hero>
-      <NpcLayer ref={NpcLayerRef} initNpcs={Npcs} susList={susList} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} sceneryJuxt={sceneryJuxt}></NpcLayer>
-      <SceneryLayer ref={sceneryLayerRef} scenery={Scenery}></SceneryLayer>
-      <FxLayer ref={fxLayerRef} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} enemyCollision={enemyCollision}></FxLayer>
-      <HudLayer ref={hudLayerRef}></HudLayer>
-    </div>
+    <GameContext.Provider value={{gameStateActive: gameState === GAME_STATES.ACTIVE}}>
+      <div className="game-screen" style={{width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`, position: 'absolute'}}>
+        <Hero ref={heroRef} initPos={InitHero.pos} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} updateFromHero={updateFromHero}></Hero>
+        <NpcLayer ref={NpcLayerRef} initNpcs={Npcs} susList={susList} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} sceneryJuxt={sceneryJuxt}></NpcLayer>
+        <SceneryLayer ref={sceneryLayerRef} scenery={Scenery}></SceneryLayer>
+        <FxLayer ref={fxLayerRef} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} enemyCollision={enemyCollision}></FxLayer>
+        <HudLayer ref={hudLayerRef}></HudLayer>
+      </div>
+    </GameContext.Provider>
   );
 }

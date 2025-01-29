@@ -2,7 +2,8 @@ import {
   GRID_SIZE,
   GAME_WIDTH,
   GAME_HEIGHT
- } from "../CONSTANTS";
+} from "../CONSTANTS";
+import { GameContext } from "../screens/GameScreen";
 
 export default function SceneryLayer(props) {
   const { scenery } = props;

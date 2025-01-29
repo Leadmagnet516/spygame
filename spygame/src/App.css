@@ -98,7 +98,7 @@ body {
 
 .fov-cone {
   position: absolute;
-  
+  transition: transform .5s ease-in-out
 }
 
 .fov-boundary {

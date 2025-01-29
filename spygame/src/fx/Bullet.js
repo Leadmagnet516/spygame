@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   GRID_SIZE,
   EVENT_BULLET_COLLISION
- } from "../CONSTANTS";
+} from "../CONSTANTS";
 import { pixToPos } from "../METHODS";
+import { GameContext } from "../screens/GameScreen";
 
 const BULLET_SPEED = 16;
 const TICK_DURATION = 16;
@@ -16,7 +17,11 @@ export default function Bullet(props) {
     top: initPos.y * GRID_SIZE + GRID_SIZE / 2
   })
 
+  const { gameStateActive } = useContext(GameContext);
+
   useEffect(() => {
+    if (!gameStateActive) return;
+
     const moveBullet = () => { 
       const newLeft = loc.left + Math.cos(aim) * BULLET_SPEED;
       const newTop = loc.top + Math.sin(aim) * BULLET_SPEED;

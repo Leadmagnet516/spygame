@@ -2,19 +2,13 @@ import './App.css';
 import {
   GAME_WIDTH,
   GAME_HEIGHT,
-  EVENT_SHOW_MODAL
+  EVENT_OPEN_MODAL,
+  EVENT_CLOSE_MODAL,
+  APP_STATES
 } from './CONSTANTS';
 import SplashScreen from './screens/SplashScreen';
 import GameScreen from './screens/GameScreen';
 import { createContext, useEffect, useMemo, useState } from "react";
-
-const STATE = {
-  SPLASH: "SplashScreenState",
-  GAME: "GameScreenState",
-  MODAL: "ModalState",
-  NULL: "NullState",
-  PANTS: "PantsState"
-}
 
 /* const importScreen = screen => {
   console.log("importScreen", screen);
@@ -26,11 +20,11 @@ const STATE = {
   )
 } */
 
-export const GameContext = createContext({appState: STATE.NULL, xOffset: 0, yOffset: 0});
+export const AppContext = createContext({appState: APP_STATES.NULL, xOffset: 0, yOffset: 0});
 
 function App() {
-  const [ appState, setAppState ] = useState(STATE.SPLASH);
-  const [ prevAppState, setPrevAppState ] = useState(STATE.NULL);
+  const [ appState, setAppState ] = useState(APP_STATES.SPLASH);
+  const [ prevAppState, setPrevAppState ] = useState(APP_STATES.NULL);
   const [ xOffset, setXOffset ] = useState(0);
   const [ yOffset, setYOffset ] = useState(0);
 
@@ -40,14 +34,14 @@ function App() {
   }
 
   const splashToGame = () => {
-    toggleAppState(STATE.GAME);
+    toggleAppState(APP_STATES.GAME);
   }
 
-  const handleModalOpen = () => {
-    toggleAppState(STATE.MODAL);
+  const handleOpenModal = () => {
+    toggleAppState(APP_STATES.MODAL);
   }
 
-  const handleModalClose = () => {
+  const handleCloseModal = () => {
     toggleAppState(prevAppState);
   }
 
@@ -57,6 +51,17 @@ function App() {
   }
 
   useEffect(() => {
+    window.addEventListener(EVENT_OPEN_MODAL, handleOpenModal);
+    window.addEventListener(EVENT_CLOSE_MODAL, handleCloseModal);
+
+    return () => {
+      window.removeEventListener(EVENT_OPEN_MODAL, handleOpenModal);
+      window.removeEventListener(EVENT_CLOSE_MODAL, handleCloseModal);
+    }
+  }, [appState]);
+
+  // LISTENERS
+  useEffect(() => {
     handleWindowResize();
     window.addEventListener('resize', handleWindowResize);
 
@@ -65,28 +70,20 @@ function App() {
     }
   });
 
-  useEffect(() => {
-    window.addEventListener(EVENT_SHOW_MODAL, handleModalOpen)
-
-    return () => {
-      window.removeEventListener(EVENT_SHOW_MODAL, handleModalOpen);
-    }
-  }, [appState]);
-
   return (
-    <div className="App" style={{width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`}}>
-        <div className="splash0screen-container container" style={{display: appState === STATE.SPLASH ? "block" : "none"}}>
-          <SplashScreen splashToGame={splashToGame}></SplashScreen>
-        </div>
-        <GameContext.Provider value={{appState, xOffset, yOffset}}>
-          <div className="game-screen-container container" style={{display: appState === STATE.GAME ? "block" : "none"}}>
-            <GameScreen></GameScreen>
+    <AppContext.Provider value={{appState, xOffset, yOffset}}>
+      <div className="App" style={{width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`}}>
+          <div className="splash0screen-container container" style={{display: appState === APP_STATES.SPLASH ? "block" : "none"}}>
+            <SplashScreen splashToGame={splashToGame}></SplashScreen>
           </div>
-        </GameContext.Provider>
-        <div className="modal-layer-container container" style={{display: appState === STATE.MODAL ? "block" : "none"}}>
-          <button type="button" onClick={handleModalClose}>Close Modal</button>
-        </div>
-    </div>
+            <div className="game-screen-container container" style={{display: appState === APP_STATES.GAME ? "block" : "none"}}>
+              <GameScreen gameStateActive={appState === APP_STATES.GAME} ></GameScreen>
+            </div>
+          <div className="modal-layer-container container" style={{display: appState === APP_STATES.MODAL ? "block" : "none"}}>
+            <button type="button" onClick={handleCloseModal}>Close Modal</button>
+          </div>
+      </div>
+    </AppContext.Provider>
   );
 }
 

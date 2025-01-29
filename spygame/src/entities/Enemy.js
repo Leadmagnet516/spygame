@@ -4,11 +4,14 @@ import {
   ENTITY_MOOD
  } from "../CONSTANTS";
 import { randomIntBetween } from "../METHODS";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import enemySprite from '../images/enemy.png'
+import { GameContext } from "../screens/GameScreen";
 
 const ENEMY_TICK_DURATION = 1000;
-const LETHARGY = 2;
+const ODDS_AGAINST_MOVING = 2;
+const ODDS_AGAINST_AIMING = 4;
+const MAX_AIM_CHANGE = 1;
 const BASE_HITPOINTS = 100;
 
 export default function Enemy(props) {
@@ -20,6 +23,8 @@ export default function Enemy(props) {
   const [ health, setHealth ] = useState(BASE_HITPOINTS);
   const [ intervalId, setIntervalId ] = useState(0);
   const [ damageTotal, setDamageTotal ] = useState(0);
+  const [ aim, setAim ] = useState(npc.aim);
+  const { gameStateActive } = useContext(GameContext);
 
   const updatePos = (h = 0, v = 0) => {
     const newPos =  {x: pos.x + h, y: pos.y + v};
@@ -27,6 +32,12 @@ export default function Enemy(props) {
       setPos(newPos);
       updateFromNpc(id, ENTITY_UPDATE.MOVE, {pos: newPos});
     }
+  }
+
+  const updateAim = newAim => {
+    //console.log(`Aiming at ${newAim}`);
+    setAim(newAim);
+    updateFromNpc(id, ENTITY_UPDATE.AIM, {aim: newAim});
   }
 
   const handleHit = damage => {
@@ -40,15 +51,22 @@ export default function Enemy(props) {
     }, 50);
   }
 
-  const moveSelf = () => {
-    if(Math.random() * LETHARGY < 1) {
+  const moveRandom = () => {
+    if(Math.random() * ODDS_AGAINST_MOVING < 1) {
       updatePos(randomIntBetween(-1, 1), randomIntBetween(-1, 1));
     }
   }
 
-/*   if(!intervalId) {
-    setIntervalId(setInterval(moveSelf, ENEMY_TICK_DURATION));
-  } */
+  const aimRandom = () => {
+    if(Math.random() * ODDS_AGAINST_AIMING < 1) {
+      updateAim(aim + (Math.random() * MAX_AIM_CHANGE - MAX_AIM_CHANGE - 2));
+    }
+  }
+
+  const doRandomStuff = () => {
+    moveRandom();
+    aimRandom();
+  }
 
   useEffect(() => {
     if(!alive) {
@@ -64,7 +82,15 @@ export default function Enemy(props) {
       handleHit(20);
       setDamageTotal(damageTaken);
     }
-  }, [damageTaken])
+  }, [damageTaken]);
+
+  useEffect(() => {
+    if (gameStateActive && !intervalId) {
+      setIntervalId(setInterval(doRandomStuff, ENEMY_TICK_DURATION));
+    } else if (!gameStateActive && intervalId) {
+      setIntervalId(clearInterval(intervalId));
+    }
+  }, [gameStateActive])
 
   let fovWidth = fov.range * GRID_SIZE;
   let fovHeight = Math.sin(fov.field) * fov.range * GRID_SIZE;
@@ -77,7 +103,7 @@ export default function Enemy(props) {
       transform: `${alive ? 'none' : 'rotate(90deg)'}`
     }}>
       <img src={enemySprite} alt="hero" width={GRID_SIZE} height={GRID_SIZE}></img>
-      <div className="fov-cone" style={{left: `${GRID_SIZE/2}px`, top: `${4 - fovHeight/2}px`, width: `${fovWidth}px`, height: `${fovHeight}px`, display: `${alive ? "block" : "none"}`, transform: `rotate(${npc.aim}rad)`, transformOrigin: 'center left'}}>
+      <div className="fov-cone" style={{left: `${GRID_SIZE/2}px`, top: `${4 - fovHeight/2}px`, width: `${fovWidth}px`, height: `${fovHeight}px`, display: `${alive ? "block" : "none"}`, transform: `rotate(${aim}rad)`, transformOrigin: 'center left'}}>
         <div className="fov-boundary" style={{top: `${fovHeight/2}px`, width: `${fovWidth}px`, transform: `rotate(${-fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.SUS ? "#AA0" : mood === ENTITY_MOOD.COMBAT ? "#F00" : "#0A0"}`}}></div>
         <div className="fov-boundary" style={{top: `${fovHeight/2}px`, width: `${fovWidth}px`, transform: `rotate(${fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.SUS ? "#AA0" : mood === ENTITY_MOOD.COMBAT ? "#F00" : "#0A0"}`}}></div>
       </div>

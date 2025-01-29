@@ -15,7 +15,7 @@ export const Level = {
       aim: 0,
       fov: {
         field: Math.PI / 3,
-        range: 20
+        range: 10
       }
     }/* ,
     {
@@ -26,7 +26,7 @@ export const Level = {
       aim: 2,
       fov: {
         field: Math.PI / 3,
-        range: 5
+        range: 10
       }
     },
     {
@@ -34,10 +34,10 @@ export const Level = {
         x: 4,
         y: 10
       },
-      aim: 3,
+      aim: -1,
       fov: {
         field: Math.PI / 3,
-        range: 5
+        range: 10
       }
     } */
   ],

@@ -7,7 +7,8 @@ import {
 import { angleBetween, posToPix } from '../METHODS';
 import spySprite from '../images/spy.png'
 //import { ThemeContext } from "../App";
-import { GameContext } from '../App';
+import { AppContext } from '../App';
+import { GameContext } from "../screens/GameScreen";
 
 const HERO_TICK_DURATION = 100;
 
@@ -16,7 +17,8 @@ export default function Hero(props) {
   const [ pos, setPos ] = useState(initPos);
   const [ aim, setAim ] = useState(0);
 
-  const {xOffset, yOffset} = useContext(GameContext);
+  const {xOffset, yOffset} = useContext(AppContext);
+  const { gameStateActive } = useContext(GameContext);
 
   // TRACKING MOVEMENT KEYS HELD DOWN
   const [ leftKeyDown, setLeftKeyDown ] = useState(false);
@@ -97,6 +99,7 @@ export default function Hero(props) {
   }
 
   const moveTick = () => {
+    if (!gameStateActive) return;
     if (leftKeyDown) {
       updatePos(-1, 0);
     }
@@ -112,6 +115,7 @@ export default function Hero(props) {
   }
 
   const handleMouseMove = e => {
+    if (!gameStateActive) return;
     const ox = e.clientX - xOffset - pos.x * GRID_SIZE - GRID_SIZE / 2;
     const oy = e.clientY - yOffset - pos.y * GRID_SIZE - GRID_SIZE / 2;
     let rot = Math.atan(oy/ox);
@@ -135,6 +139,7 @@ export default function Hero(props) {
     moveTick(ticksElapsed);
   }, [ticksElapsed]);
 
+  // LISTENERS
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);

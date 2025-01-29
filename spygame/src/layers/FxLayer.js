@@ -1,16 +1,13 @@
 import {
-  GRID_SIZE,
-  GRID_WIDTH,
-  GRID_HEIGHT,
+  GAME_WIDTH,
+  GAME_HEIGHT,
   EVENT_FIRE_WEAPON,
   EVENT_BULLET_COLLISION,
   EVENT_NPC_HIT
- } from "../CONSTANTS";
+} from "../CONSTANTS";
 import Bullet from "../fx/Bullet";
 import { useEffect, useState } from "react";
-
-const GameScreen_WIDTH = GRID_WIDTH * GRID_SIZE;
-const GameScreen_HEIGHT = GRID_HEIGHT * GRID_SIZE;
+import { GameContext } from "../screens/GameScreen";
 
 const FxLayer = (props, ref) => {
   const { boundaryCollision, sceneryCollision, enemyCollision } = props;
@@ -31,6 +28,8 @@ const FxLayer = (props, ref) => {
     setFx(newFx);
   }
 
+  // LISTENERS
+  // TODO: Move handlers outside useEffect
   useEffect(() => {
     const handleFireWeapon = e => {
       const { pos, aim } = e.detail;
@@ -55,8 +54,8 @@ const FxLayer = (props, ref) => {
   
   return (
     <div className="fx_layer" style={{
-      width: `${GameScreen_WIDTH}px`,
-      height: `${GameScreen_HEIGHT}px`,
+      width: `${GAME_WIDTH}px`,
+      height: `${GAME_HEIGHT}px`,
       position: 'absolute'
     }}>
     {
