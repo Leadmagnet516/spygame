@@ -3,6 +3,7 @@ export const GRID_WIDTH = 24;
 export const GRID_HEIGHT = 16;
 export const GAME_WIDTH = GRID_SIZE * GRID_WIDTH;
 export const GAME_HEIGHT = GRID_SIZE * GRID_HEIGHT;
+export const TICK_SIZE = 80;
 
 // GAME EVENTS
 export const EVENT_FIRE_WEAPON = 'FireWeapon';

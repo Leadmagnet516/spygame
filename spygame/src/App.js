@@ -9,6 +9,7 @@ import {
 import SplashScreen from './screens/SplashScreen';
 import GameScreen from './screens/GameScreen';
 import { createContext, useEffect, useState } from "react";
+import usePrevious from "./hooks/usePrevious";
 
 /* const importScreen = screen => {
   console.log("importScreen", screen);
@@ -24,25 +25,24 @@ export const AppContext = createContext({appState: APP_STATE.NULL, xOffset: 0, y
 
 function App() {
   const [ appState, setAppState ] = useState(APP_STATE.SPLASH);
-  const [ prevAppState, setPrevAppState ] = useState(APP_STATE.NULL);
+  const prevAppState = usePrevious(appState);
   const [ xOffset, setXOffset ] = useState(0);
   const [ yOffset, setYOffset ] = useState(0);
 
   const toggleAppState = newState => {
-    setPrevAppState(appState);
     setAppState(newState);
   }
 
   const splashToGame = () => {
-    toggleAppState(APP_STATE.GAME);
+    setAppState(APP_STATE.GAME);
   }
 
   const handleOpenModal = () => {
-    toggleAppState(APP_STATE.MODAL);
+    setAppState(APP_STATE.MODAL);
   }
 
   const handleCloseModal = () => {
-    toggleAppState(prevAppState);
+    setAppState(prevAppState);
   }
 
   const handleWindowResize = () => {

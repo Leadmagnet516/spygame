@@ -20,6 +20,7 @@ import {
  } from "../METHODS";
 import * as Level from "../world/levels/1/1_Silo.json";
 import { createContext, useEffect, useRef, useState } from 'react';
+import usePrevious from "../hooks/usePrevious";
 
 const REF_HERO = "Hero";
 const REF_CHARACTERS = "Characters";
@@ -32,7 +33,7 @@ export const GameContext = createContext({ gameState: GAME_STATE.INACTIVE });
 export default function GameScreen( props ) {
   const { gameStateActive } = props;
   const [ gameState, setGameState ] = useState(gameStateActive ? GAME_STATE.ACTIVE : GAME_STATE.INACTIVE);
-  const [ prevGameState, setPrevGameState ] = useState(GAME_STATE.NULL);
+  const prevGameState = usePrevious(gameState);
 
   // DEFINE REFS
   const heroRef = useRef(REF_HERO);
@@ -127,20 +128,17 @@ export default function GameScreen( props ) {
 
   // GAMESTATE MANAGEMENT
   const handleChangeGamestate = e => {
-    setPrevGameState(gameState);
     setGameState(e.detail.newState);
   }
 
   const handleOpenModal = e => {
     if (gameState === GAME_STATE.ACTIVE) {
-      setPrevGameState(GAME_STATE.ACTIVE);
       setGameState(GAME_STATE.PAUSED)
     }
   }
 
   const handleCloseModal = e => {
     if (prevGameState === GAME_STATE.ACTIVE) {
-      setPrevGameState(GAME_STATE.PAUSED);
       setGameState(GAME_STATE.ACTIVE);
     }
   }
