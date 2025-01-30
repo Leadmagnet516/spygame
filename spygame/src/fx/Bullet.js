@@ -11,7 +11,7 @@ const TICK_DURATION = 16;
 const BULLET_DAMAGE = 25;
 
 export default function Bullet(props) {
-  let { initPos, id, aim, boundaryCollision, sceneryCollision, enemyCollision } = props;
+  let { initPos, id, aim, boundaryCollision, sceneryCollision, entityCollision } = props;
   const [ loc, setLoc ] = useState({
     left: initPos.x * GRID_SIZE + GRID_SIZE / 2,
     top: initPos.y * GRID_SIZE + GRID_SIZE / 2
@@ -26,10 +26,10 @@ export default function Bullet(props) {
       const newLeft = loc.left + Math.cos(aim) * BULLET_SPEED;
       const newTop = loc.top + Math.sin(aim) * BULLET_SPEED;
       const pos = pixToPos({left: newLeft, top: newTop});
-      const enemyCollisionId = enemyCollision(pos);
+      const entityCollisionId = entityCollision(pos);
       
-      if (enemyCollisionId) {
-        dispatchEvent(new CustomEvent(EVENT_BULLET_COLLISION, {detail: {bulletId: id, victimId: enemyCollisionId, damage: BULLET_DAMAGE}}))
+      if (entityCollisionId) {
+        dispatchEvent(new CustomEvent(EVENT_BULLET_COLLISION, {detail: {bulletId: id, victimId: entityCollisionId, damage: BULLET_DAMAGE}}))
         return() => {};
       }
 

@@ -57,7 +57,7 @@ export default function GameScreen( props ) {
       collision = true;
     }
     
-    return collision;
+    return collision ? "bnd" : "";
   }
 
   const sceneryCollision = pos => {
@@ -70,10 +70,10 @@ export default function GameScreen( props ) {
       }
     })
 
-    return collision;
+    return collision ? "scn" : "";
   }
 
-  const enemyCollision = pos => {
+  const npcCollision = pos => {
     const npcs = npcLayerRef.current.getNpcs();
     let collision = '';
 
@@ -86,8 +86,16 @@ export default function GameScreen( props ) {
     return collision;
   }
 
-  const heroCollision = pos => {
-    return heroPos === pos;
+  const entityCollision = pos => {
+    let collision = '';
+    
+    if (pos === heroPos) {
+      collision = "hero";
+    } else {
+      collision = npcCollision(pos);
+    }
+
+    return collision;
   }
 
   // INTER-LAYER INTERACTIONS
@@ -164,9 +172,9 @@ export default function GameScreen( props ) {
     <GameContext.Provider value={{gameStateActive: gameState === GAME_STATE.ACTIVE}}>
       <div className="game-screen" style={{width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`, position: 'absolute'}}>
         <SceneryLayer ref={sceneryLayerRef} scenery={Scenery}></SceneryLayer>
-        <NpcLayer ref={npcLayerRef} initNpcs={Npcs} susList={susList} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} heroCollision={heroCollision} sceneryJuxt={sceneryJuxt}></NpcLayer>
-        <Hero ref={heroRef} initPos={InitHero.pos} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} enemyCollision={enemyCollision} updateFromHero={updateFromHero}></Hero>
-        <FxLayer ref={fxLayerRef} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} enemyCollision={enemyCollision} heroCollision={heroCollision}></FxLayer>
+        <NpcLayer ref={npcLayerRef} initNpcs={Npcs} susList={susList} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} entityCollision={entityCollision} sceneryJuxt={sceneryJuxt}></NpcLayer>
+        <Hero ref={heroRef} initPos={InitHero.pos} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} npcCollision={npcCollision} updateFromHero={updateFromHero}></Hero>
+        <FxLayer ref={fxLayerRef} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} entityCollision={entityCollision}></FxLayer>
         <HudLayer ref={hudLayerRef}></HudLayer>
       </div>
     </GameContext.Provider>

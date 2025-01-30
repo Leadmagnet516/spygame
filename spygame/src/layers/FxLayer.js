@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { GameContext } from "../screens/GameScreen";
 
 const FxLayer = (props, ref) => {
-  const { boundaryCollision, sceneryCollision, enemyCollision } = props;
+  const { boundaryCollision, sceneryCollision, entityCollision } = props;
   const [fx, setFx ] = useState([]);
 
   const createBullet = (pos, aim) => {
@@ -62,7 +62,7 @@ const FxLayer = (props, ref) => {
       fx.map((fxi) => {
         if(fxi.fxType === 'bull') {
           return (
-            <Bullet initPos={fxi.initPos} aim={fxi.aim} id={fxi.id} key={fxi.id} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} enemyCollision={enemyCollision}></Bullet>
+            <Bullet initPos={fxi.initPos} aim={fxi.aim} id={fxi.id} key={fxi.id} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} entityCollision={entityCollision}></Bullet>
           )
         }
         return {};

@@ -81,13 +81,7 @@ body {
 .npc-layer, .scenery-layer, .fx-layer {
   position: absolute;
 }
-
-.hero {
-  position: absolute;
-  transition: left .1s linear, top .1s linear;
-}
-
-.enemy {
+.entity {
   position: absolute;
   transition: left .1s linear, top .1s linear;
 }

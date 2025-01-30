@@ -10,26 +10,29 @@ import { GameContext } from "../screens/GameScreen";
 import useMovementKeys from "../hooks/useMovementKeys";
 import useMouseAim from "../hooks/useMouseAim";
 import useTickInterval from "../hooks/useTickInterval";
+import useGridPosition from "../hooks/useGridPosition";
 
 const Hero = forwardRef((props, ref) => {
-  const { initPos, boundaryCollision, sceneryCollision, enemyCollision, updateFromHero } = props;
-  const [ pos, setPos ] = useState(initPos);
+  const { initPos, boundaryCollision, sceneryCollision, npcCollision, updateFromHero } = props;
+  //const [ pos, setPos ] = useState(initPos);
   const {xOffset, yOffset} = useContext(AppContext);
   const { gameStateActive } = useContext(GameContext);
   const { leftKeyDown, rightKeyDown, upKeyDown, downKeyDown } = useMovementKeys();
+  const { pos, updatePos } = useGridPosition("hero", initPos, updateFromHero, [boundaryCollision, sceneryCollision, npcCollision]);
   const { aim, mouseDown } = useMouseAim(xOffset, yOffset, pos);
 
-  const updatePos = movement => {
+/*   const updatePos = movement => {
+    console.log("updatePos");
     setPos(pos => {
       const newPos =  {x: pos.x + movement.hor, y: pos.y + movement.ver};
-      if(!boundaryCollision(newPos) && !sceneryCollision(newPos) && !enemyCollision(newPos)) {
+      if(!boundaryCollision(newPos) && !sceneryCollision(newPos) && !npcCollision(newPos)) {
         return {x: pos.x + movement.hor, y: pos.y + movement.ver};
       }
       return pos;
     });
 
     updateFromHero("hero", ENTITY_UPDATE.MOVE, {pos});
-  }
+  } */
 
   const onTick = () => {
     if (!gameStateActive) return;
@@ -48,7 +51,10 @@ const Hero = forwardRef((props, ref) => {
       movement.ver += 1;
     }
 
-    updatePos(movement)
+    if (movement.hor !== 0 || movement.ver !== 0) {
+      updatePos(movement)
+    }
+    
   }
 
   useTickInterval(onTick);
@@ -64,13 +70,11 @@ const Hero = forwardRef((props, ref) => {
   }, [mouseDown]);
 
   return (
-    <div className="hero" style={{
+    <div className="entity hero" style={{
       left: `${pos.x * GRID_SIZE}px`,
       top: `${pos.y * GRID_SIZE}px`,
     }}>
       <img src={spySprite} alt="hero" width={GRID_SIZE} height={GRID_SIZE}></img>
-      {/* <br></br><span style={{width: "48px", fontSize: "12px", textAlign: "center", color: "#FFFFFF"}}>{`(${pos.x}, ${pos.y})`}</span>
-      <br></br><span style={{width: "48px", fontSize: "12px", textAlign: "center", color: "#FFFFFF"}}>{`${Math.round(aim / Math.PI / 2 * 360)} deg`}</span> */}
     </div>
   );
 })

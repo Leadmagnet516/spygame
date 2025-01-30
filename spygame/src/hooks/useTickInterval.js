@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TICK_SIZE } from "../CONSTANTS";
+import { TICK_MS } from "../CONSTANTS";
 
 export default function useTickInterval(callback) {
   const [ ticksElapsed, setTicksElapsed ] = useState(0);
@@ -8,7 +8,7 @@ export default function useTickInterval(callback) {
     const interval = setInterval(() => {
       setTicksElapsed(ticksElapsed + 1);
       callback();
-    }, TICK_SIZE);
+    }, TICK_MS);
     return () => {
       clearInterval(interval);
     }

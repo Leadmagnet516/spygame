@@ -7,6 +7,7 @@ import { randomIntBetween } from "../METHODS";
 import { useContext, useEffect, useState } from "react";
 import enemySprite from '../images/enemy.png'
 import { GameContext } from "../screens/GameScreen";
+import useGridPosition from "../hooks/useGridPosition";
 
 const ENEMY_TICK_DURATION = 1000;
 const ODDS_AGAINST_MOVING = 2;
@@ -15,24 +16,16 @@ const MAX_AIM_CHANGE = 1;
 const BASE_HITPOINTS = 100;
 
 export default function Enemy(props) {
-  const { npc, damageTaken, boundaryCollision, sceneryCollision, heroCollision, updateFromNpc } = props;
+  const { npc, damageTaken, boundaryCollision, sceneryCollision, entityCollision, updateFromNpc } = props;
   const { id, fov, mood } = npc;
   const [ alive, setAlive ] = useState(true);
-  const [ pos, setPos ] = useState(npc.pos);
+  const { pos, updatePos } = useGridPosition(npc.id, npc.pos, updateFromNpc, [boundaryCollision, sceneryCollision, entityCollision]);
   const [ flash, setFlash ] = useState(false);
   const [ health, setHealth ] = useState(BASE_HITPOINTS);
   const [ intervalId, setIntervalId ] = useState(0);
   const [ damageTotal, setDamageTotal ] = useState(0);
   const [ aim, setAim ] = useState(npc.aim);
   const { gameStateActive } = useContext(GameContext);
-
-  const updatePos = (h = 0, v = 0) => {
-    const newPos =  {x: pos.x + h, y: pos.y + v};
-    if(!boundaryCollision(newPos) && !sceneryCollision(newPos) && !heroCollision(newPos)) {
-      setPos(newPos);
-      updateFromNpc(id, ENTITY_UPDATE.MOVE, {pos: newPos});
-    }
-  }
 
   const updateAim = newAim => {
     setAim(newAim);
@@ -94,7 +87,7 @@ export default function Enemy(props) {
   let fovWidth = fov.range * GRID_SIZE;
   let fovHeight = Math.sin(fov.field) * fov.range * GRID_SIZE;
   return (
-    <div className="enemy" style={{
+    <div className="entity enemy" style={{
       position: "absolute",
       left: `${pos.x * GRID_SIZE}px`,
       top: `${pos.y * GRID_SIZE}px`,
