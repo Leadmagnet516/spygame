@@ -97,8 +97,8 @@ export default function Enemy(props) {
     }}>
       <img src={enemySprite} alt="hero" width={GRID_SIZE} height={GRID_SIZE}></img>
       <div className="fov-cone" style={{left: `${GRID_SIZE/2}px`, top: `${4 - fovHeight/2}px`, width: `${fovWidth}px`, height: `${fovHeight}px`, display: `${alive ? "block" : "none"}`, transform: `rotate(${aim}rad)`, transformOrigin: 'center left'}}>
-        <div className="fov-boundary" style={{top: `${fovHeight/2}px`, width: `${fovWidth}px`, transform: `rotate(${-fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.SUS ? "#AA0" : mood === ENTITY_MOOD.COMBAT ? "#F00" : "#0A0"}`}}></div>
-        <div className="fov-boundary" style={{top: `${fovHeight/2}px`, width: `${fovWidth}px`, transform: `rotate(${fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.SUS ? "#AA0" : mood === ENTITY_MOOD.COMBAT ? "#F00" : "#0A0"}`}}></div>
+        <div className="fov-boundary" style={{top: `${fovHeight/2}px`, width: `${fovWidth}px`, opacity: ".3", transform: `rotate(${-fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.SUS ? "#AA0" : mood === ENTITY_MOOD.COMBAT ? "#F00" : "#0A0"}`}}></div>
+        <div className="fov-boundary" style={{top: `${fovHeight/2}px`, width: `${fovWidth}px`, opacity: ".3", transform: `rotate(${fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.SUS ? "#AA0" : mood === ENTITY_MOOD.COMBAT ? "#F00" : "#0A0"}`}}></div>
       </div>
     </div>
   );

@@ -1,8 +1,7 @@
 import { forwardRef, useContext, useEffect, useState } from 'react';
 import {
   GRID_SIZE,
-  EVENT_FIRE_WEAPON,
-  ENTITY_UPDATE
+  EVENT_FIRE_WEAPON
 } from "../CONSTANTS";
 import spySprite from '../images/spy.png'
 import { AppContext } from '../App';
@@ -14,25 +13,11 @@ import useGridPosition from "../hooks/useGridPosition";
 
 const Hero = forwardRef((props, ref) => {
   const { initPos, boundaryCollision, sceneryCollision, npcCollision, updateFromHero } = props;
-  //const [ pos, setPos ] = useState(initPos);
   const {xOffset, yOffset} = useContext(AppContext);
   const { gameStateActive } = useContext(GameContext);
   const { leftKeyDown, rightKeyDown, upKeyDown, downKeyDown } = useMovementKeys();
   const { pos, updatePos } = useGridPosition("hero", initPos, updateFromHero, [boundaryCollision, sceneryCollision, npcCollision]);
   const { aim, mouseDown } = useMouseAim(xOffset, yOffset, pos);
-
-/*   const updatePos = movement => {
-    console.log("updatePos");
-    setPos(pos => {
-      const newPos =  {x: pos.x + movement.hor, y: pos.y + movement.ver};
-      if(!boundaryCollision(newPos) && !sceneryCollision(newPos) && !npcCollision(newPos)) {
-        return {x: pos.x + movement.hor, y: pos.y + movement.ver};
-      }
-      return pos;
-    });
-
-    updateFromHero("hero", ENTITY_UPDATE.MOVE, {pos});
-  } */
 
   const onTick = () => {
     if (!gameStateActive) return;

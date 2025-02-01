@@ -3,6 +3,7 @@ import {
   GAME_WIDTH,
   GAME_HEIGHT
 } from "../CONSTANTS";
+import siloBg from "../world/levels/1/Silo.png";
 import { GameContext } from "../screens/GameScreen";
 
 export default function SceneryLayer(props) {
@@ -13,7 +14,8 @@ export default function SceneryLayer(props) {
       height: `${GAME_HEIGHT}px`,
       position: 'absolute'
     }}>
-      {
+    <img src={siloBg} alt="bg" width={GAME_WIDTH} height={GAME_HEIGHT}></img>
+      {/* {
         scenery.map((scn, idx) => {
           return (
             <div className="scenery" key={`scn_${idx}`} style={{
@@ -25,7 +27,7 @@ export default function SceneryLayer(props) {
             }}></div>
           )
         })
-      }
+      } */}
     </div>
   );
 }
