@@ -34,13 +34,11 @@ export const ENTITY_MOOD = {
 export const APP_STATE = {
   SPLASH: 'SplashScreenState',
   GAME: 'GameScreenState',
-  MODAL: 'ModalState',
-  NULL: 'NullState'
+  MODAL: 'ModalState'
 }
 
 export const GAME_STATE = {
   INACTIVE: 'InactiveState',
   ACTIVE: 'ActiveState',
-  PAUSED: 'PausedState',
-  NULL: 'NullState'
+  PAUSED: 'PausedState'
 }

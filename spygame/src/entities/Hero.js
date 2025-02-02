@@ -47,7 +47,6 @@ const Hero = forwardRef((props, ref) => {
 
   useEffect(() => {
     onTick();
-    console.log('Hero.onTick', gameStateActive);
   }, [leftKeyDown, rightKeyDown, upKeyDown, downKeyDown]);
 
   useEffect(() => {

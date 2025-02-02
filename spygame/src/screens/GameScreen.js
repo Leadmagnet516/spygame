@@ -20,9 +20,8 @@ import {
  } from '../METHODS';
 import * as Level from '../world/levels/1/1_Silo.json';
 import { useEffect, useRef, useState } from 'react';
-import usePrevious from '../hooks/usePrevious';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectGameStateActive } from '../SELECTORS';
+import { selectPrevGameState, selectGameStateActive } from '../SELECTORS';
 
 const REF_HERO = 'Hero';
 const REF_CHARACTERS = 'Characters';
@@ -32,8 +31,7 @@ const REF_HUD = 'Hud';
 
 export default function GameScreen( props ) {
   const gameStateActive = useSelector(selectGameStateActive);
-  const [ gameState, setGameState ] = useState(gameStateActive ? GAME_STATE.ACTIVE : GAME_STATE.INACTIVE);
-  const prevGameState = usePrevious(gameState);
+  const prevGameState = useSelector(selectPrevGameState);
   const dispatch = useDispatch();
 
   // DEFINE REFS
@@ -136,10 +134,6 @@ export default function GameScreen( props ) {
   }
 
   // GAMESTATE MANAGEMENT
-  const handleChangeGamestate = e => {
-    dispatch({type: ACTION_CHANGE_GAME_STATE, payload: e.detail.newState});
-  }
-
   const handleOpenModal = e => {
     if (gameStateActive) {
       dispatch({type: ACTION_CHANGE_GAME_STATE, payload: GAME_STATE.PAUSED});
@@ -153,17 +147,17 @@ export default function GameScreen( props ) {
   }
 
   useEffect(() => {
-    dispatch({ type: ACTION_CHANGE_GAME_STATE, payload: GAME_STATE.ACTIVE});
-  }, [gameStateActive])
+    if (props.appInGameState) {
+      dispatch({ type: ACTION_CHANGE_GAME_STATE, payload: GAME_STATE.ACTIVE});
+    }
+  }, [props.appInGameState])
 
   // LISTENERS
   useEffect(() => {
-    //window.addEventListener(EVENT_CHANGE_GAME_STATE, handleChangeGamestate);
     window.addEventListener(EVENT_OPEN_MODAL, handleOpenModal);
     window.addEventListener(EVENT_CLOSE_MODAL, handleCloseModal);
 
     return () => {
-      //window.removeEventListener(EVENT_CHANGE_GAME_STATE, handleChangeGamestate);
       window.removeEventListener(EVENT_OPEN_MODAL, handleOpenModal);
       window.removeEventListener(EVENT_CLOSE_MODAL, handleCloseModal);
     }
