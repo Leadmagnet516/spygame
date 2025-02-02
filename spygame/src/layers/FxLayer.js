@@ -4,10 +4,10 @@ import {
   EVENT_FIRE_WEAPON,
   EVENT_BULLET_COLLISION,
   EVENT_NPC_HIT
-} from "../CONSTANTS";
-import Bullet from "../fx/Bullet";
-import { useEffect, useState } from "react";
-import { GameContext } from "../screens/GameScreen";
+} from '../CONSTANTS';
+import Bullet from '../fx/Bullet';
+import { useEffect, useState } from 'react';
+import { GameContext } from '../screens/GameScreen';
 
 const FxLayer = (props, ref) => {
   const { boundaryCollision, sceneryCollision, entityCollision } = props;
@@ -15,7 +15,7 @@ const FxLayer = (props, ref) => {
 
   const createBullet = (pos, aim) => {
     setFx([...fx, {
-        fxType: "bull",
+        fxType: 'bull',
         id: `fx_${fx.length}${Math.random()}`,  // Dumb hack to make IDs more unique
         initPos: pos,
         aim
@@ -53,7 +53,7 @@ const FxLayer = (props, ref) => {
   })
   
   return (
-    <div className="fx_layer" style={{
+    <div className='fx_layer' style={{
       width: `${GAME_WIDTH}px`,
       height: `${GAME_HEIGHT}px`,
       position: 'absolute'

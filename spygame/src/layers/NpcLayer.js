@@ -4,15 +4,15 @@ import {
   EVENT_NPC_HIT,
   ENTITY_UPDATE,
   ENTITY_MOOD
- } from "../CONSTANTS";
+ } from '../CONSTANTS';
  import {
   angleBetween,
   distanceBetween,
   angleIsWithinArc
- } from "../METHODS";
- import Enemy from "../entities/Enemy";
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { GameContext } from "../screens/GameScreen";
+ } from '../METHODS';
+ import Enemy from '../entities/Enemy';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import { GameContext } from '../screens/GameScreen';
 
 const NpcLayer = forwardRef((props, ref) => {
   const { initNpcs, susList, boundaryCollision, sceneryCollision, heroCollision, sceneryJuxt } = props;
@@ -85,10 +85,10 @@ const NpcLayer = forwardRef((props, ref) => {
       // ACT ON SUS-NESS!
       susInView.push(sus);
       switch(sus.type) {
-        case "foe":
+        case 'foe':
           npc.mood = ENTITY_MOOD.COMBAT;
           break;
-        case "hazard":
+        case 'hazard':
           npc.mood = ENTITY_MOOD.SUS;
           break;
         default:
@@ -148,7 +148,7 @@ const NpcLayer = forwardRef((props, ref) => {
 
   // TEMPLATE
   return (
-    <div className="npc-layer" style={{
+    <div className='npc-layer' style={{
       width: `${GAME_WIDTH}px`,
       height: `${GAME_HEIGHT}px`
     }}>

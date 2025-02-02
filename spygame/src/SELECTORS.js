@@ -1,4 +1,4 @@
-import { GAME_STATE } from "./CONSTANTS";
+import { GAME_STATE } from './CONSTANTS';
 
 // GAME
 export const selectGameState = state => state.gameState;

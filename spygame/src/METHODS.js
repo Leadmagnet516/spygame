@@ -1,4 +1,4 @@
-import { GRID_SIZE, GRID_HEIGHT, GRID_WIDTH } from "./CONSTANTS";
+import { GRID_SIZE, GRID_HEIGHT, GRID_WIDTH } from './CONSTANTS';
 
 export const randomIntBetween = (min, max) => {
   const range = max - min;

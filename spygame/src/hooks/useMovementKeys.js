@@ -7,41 +7,41 @@ export default function useMovementKeys() {
   const [ downKeyDown, setDownKeyDown ] = useState(false);
 
   const handleKeyDown = e => {
-    if ((e.key === "ArrowLeft" || e.key === "a" || e.key === "A") && !leftKeyDown) {
+    if ((e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') && !leftKeyDown) {
       setLeftKeyDown(true);
     }
-    if ((e.key === "ArrowRight" || e.key === "d" || e.key === "D") && !rightKeyDown) {
+    if ((e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') && !rightKeyDown) {
       setRightKeyDown(true);
     }
-    if ((e.key === "ArrowUp" || e.key === "w" || e.key === "W") && !upKeyDown) {
+    if ((e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') && !upKeyDown) {
       setUpKeyDown(true);
     }
-    if ((e.key === "ArrowDown" || e.key === "s" || e.key === "S") && !downKeyDown) {
+    if ((e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') && !downKeyDown) {
       setDownKeyDown(true);
     }
   }
 
   const handleKeyUp = e => {
-    if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
+    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
       setLeftKeyDown(false);
     }
-    if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
+    if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
       setRightKeyDown(false);
     }
-    if (e.key === "ArrowUp" || e.key === "w" || e.key === "W") {
+    if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
       setUpKeyDown(false);
     }
-    if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") {
+    if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
       setDownKeyDown(false);
     }
   }
 
   useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
     };
   })
 

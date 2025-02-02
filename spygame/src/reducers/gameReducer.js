@@ -1,7 +1,7 @@
 import {
   GAME_STATE,
   ACTION_CHANGE_GAME_STATE
-} from "../CONSTANTS";
+} from '../CONSTANTS';
 
 const initialGameState = {
   gameState: GAME_STATE.INACTIVE

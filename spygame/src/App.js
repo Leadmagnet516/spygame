@@ -10,17 +10,17 @@ import {
 } from './CONSTANTS';
 import SplashScreen from './screens/SplashScreen';
 import GameScreen from './screens/GameScreen';
-import { createContext, useEffect, useState } from "react";
-import usePrevious from "./hooks/usePrevious";
-import { useDispatch } from "react-redux";
+import { createContext, useEffect, useState } from 'react';
+import usePrevious from './hooks/usePrevious';
+import { useDispatch } from 'react-redux';
 
 /* const importScreen = screen => {
-  console.log("importScreen", screen);
+  console.log('importScreen', screen);
   lazy(() =>
     import(`./screens/${screen}`)
-      .then(data => console.log("Loaded", data))
-      .catch(() => console.log("uh oh"))
-      .finally(() => console.log("Yeah I don't know what happened here"))
+      .then(data => console.log('Loaded', data))
+      .catch(() => console.log('uh oh'))
+      .finally(() => console.log('Yeah I don't know what happened here'))
   )
 } */
 
@@ -77,15 +77,15 @@ function App() {
 
   return (
     <AppContext.Provider value={{appState, xOffset, yOffset}}>
-      <div className="App" style={{width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`}}>
-          <div className="splash0screen-container container" style={{display: appState === APP_STATE.SPLASH ? "block" : "none"}}>
+      <div className='App' style={{width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`}}>
+          <div className='splash0screen-container container' style={{display: appState === APP_STATE.SPLASH ? 'block' : 'none'}}>
             <SplashScreen splashToGame={splashToGame}></SplashScreen>
           </div>
-            <div className="game-screen-container container" style={{display: appState === APP_STATE.GAME ? "block" : "none"}}>
+            <div className='game-screen-container container' style={{display: appState === APP_STATE.GAME ? 'block' : 'none'}}>
               <GameScreen gameStateActive={appState === APP_STATE.GAME} ></GameScreen>
             </div>
-          <div className="modal-layer-container container" style={{display: appState === APP_STATE.MODAL ? "block" : "none"}}>
-            <button type="button" onClick={handleCloseModal}>Close Modal</button>
+          <div className='modal-layer-container container' style={{display: appState === APP_STATE.MODAL ? 'block' : 'none'}}>
+            <button type='button' onClick={handleCloseModal}>Close Modal</button>
           </div>
       </div>
     </AppContext.Provider>

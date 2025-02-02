@@ -1,8 +1,8 @@
-import Hero from "../entities/Hero";
-import NpcLayer from "../layers/NpcLayer";
-import SceneryLayer from "../layers/SceneryLayer";
-import FxLayer from "../layers/FxLayer";
-import HudLayer from "../layers/HudLayer";
+import Hero from '../entities/Hero';
+import NpcLayer from '../layers/NpcLayer';
+import SceneryLayer from '../layers/SceneryLayer';
+import FxLayer from '../layers/FxLayer';
+import HudLayer from '../layers/HudLayer';
 import {
   GRID_WIDTH,
   GRID_HEIGHT,
@@ -13,22 +13,22 @@ import {
   EVENT_OPEN_MODAL,
   EVENT_CLOSE_MODAL,
   ENTITY_UPDATE
-} from "../CONSTANTS";
+} from '../CONSTANTS';
 import {
   angleBetween,
   distanceBetween
- } from "../METHODS";
-import * as Level from "../world/levels/1/1_Silo.json";
+ } from '../METHODS';
+import * as Level from '../world/levels/1/1_Silo.json';
 import { useEffect, useRef, useState } from 'react';
-import usePrevious from "../hooks/usePrevious";
-import { useDispatch, useSelector } from "react-redux";
+import usePrevious from '../hooks/usePrevious';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectGameStateActive } from '../SELECTORS';
 
-const REF_HERO = "Hero";
-const REF_CHARACTERS = "Characters";
-const REF_SCENERY = "Scenery";
-const REF_FX = "Effects";
-const REF_HUD = "Hud";
+const REF_HERO = 'Hero';
+const REF_CHARACTERS = 'Characters';
+const REF_SCENERY = 'Scenery';
+const REF_FX = 'Effects';
+const REF_HUD = 'Hud';
 
 export default function GameScreen( props ) {
   const gameStateActive = useSelector(selectGameStateActive);
@@ -58,7 +58,7 @@ export default function GameScreen( props ) {
       collision = true;
     }
     
-    return collision ? "bnd" : "";
+    return collision ? 'bnd' : '';
   }
 
   const sceneryCollision = pos => {
@@ -71,7 +71,7 @@ export default function GameScreen( props ) {
       }
     })
 
-    return collision ? "scn" : "";
+    return collision ? 'scn' : '';
   }
 
   const npcCollision = pos => {
@@ -91,7 +91,7 @@ export default function GameScreen( props ) {
     let collision = '';
     
     if (pos === heroPos) {
-      collision = "hero";
+      collision = 'hero';
     } else {
       collision = npcCollision(pos);
     }
@@ -102,8 +102,8 @@ export default function GameScreen( props ) {
   // INTER-LAYER INTERACTIONS
   const [ susList, setSusList ] = useState([
     {
-      id: "hero",
-      type: "foe",
+      id: 'hero',
+      type: 'foe',
       pos: InitHero.pos
     }
   ]);
@@ -170,7 +170,7 @@ export default function GameScreen( props ) {
   });
 
   return (
-    <div className="game-screen" style={{width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`, position: 'absolute'}}>
+    <div className='game-screen' style={{width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`, position: 'absolute'}}>
       <SceneryLayer ref={sceneryLayerRef} scenery={Scenery}></SceneryLayer>
       <NpcLayer ref={npcLayerRef} initNpcs={Npcs} susList={susList} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} entityCollision={entityCollision} sceneryJuxt={sceneryJuxt}></NpcLayer>
       <Hero ref={heroRef} initPos={InitHero.pos} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} npcCollision={npcCollision} updateFromHero={updateFromHero}></Hero>

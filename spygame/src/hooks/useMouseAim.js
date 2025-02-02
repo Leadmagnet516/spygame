@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { GRID_SIZE } from "../CONSTANTS";
-import { angleBetween } from "../METHODS";
+import { useEffect, useState } from 'react';
+import { GRID_SIZE } from '../CONSTANTS';
+import { angleBetween } from '../METHODS';
 
 export default function useMouseAim(xOffset, yOffset, pos) {
   const [ aim, setAim ] = useState(0);
@@ -19,13 +19,13 @@ export default function useMouseAim(xOffset, yOffset, pos) {
   }
 
   useEffect(() => {
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mousedown", handleMouseDown);
-    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mouseup', handleMouseUp);
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mousedown", handleMouseDown);
-      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mouseup', handleMouseUp);
     };
   })
 

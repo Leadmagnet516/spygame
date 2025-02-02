@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { ENTITY_MOOD } from "../CONSTANTS";
-import { angleBetween, angleIsWithinArc, distanceBetween } from "../METHODS";
+import { useState } from 'react';
+import { ENTITY_MOOD } from '../CONSTANTS';
+import { angleBetween, angleIsWithinArc, distanceBetween } from '../METHODS';
 
 export default function useSusList() {
   const [ susList, setSusList ] = useState([]);
@@ -52,10 +52,10 @@ export default function useSusList() {
       // ACT ON SUS-NESS!
       susInView.push(sus);
       switch(sus.type) {
-        case "foe":
+        case 'foe':
           npc.mood = ENTITY_MOOD.COMBAT;
           break;
-        case "hazard":
+        case 'hazard':
           npc.mood = ENTITY_MOOD.SUS;
           break;
         default:

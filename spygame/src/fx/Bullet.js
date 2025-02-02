@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   GRID_SIZE,
   EVENT_BULLET_COLLISION
-} from "../CONSTANTS";
-import { pixToPos } from "../METHODS";
-import { useSelector } from "react-redux";
+} from '../CONSTANTS';
+import { pixToPos } from '../METHODS';
+import { useSelector } from 'react-redux';
 import { selectGameStateActive } from '../SELECTORS';
 
 const BULLET_SPEED = 16;
@@ -46,7 +46,7 @@ export default function Bullet(props) {
   });
 
   return (
-    <div className="bullet" style={{
+    <div className='bullet' style={{
       left: `${loc.left}px`,
       top: `${loc.top}px`
     }}></div>

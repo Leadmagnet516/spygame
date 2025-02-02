@@ -2,14 +2,14 @@ import { forwardRef, useContext, useEffect } from 'react';
 import {
   GRID_SIZE,
   EVENT_FIRE_WEAPON
-} from "../CONSTANTS";
+} from '../CONSTANTS';
 import spySprite from '../images/spy.png'
 import { AppContext } from '../App';
-import useMovementKeys from "../hooks/useMovementKeys";
-import useMouseAim from "../hooks/useMouseAim";
-import useTickInterval from "../hooks/useTickInterval";
-import useGridPosition from "../hooks/useGridPosition";
-import { useSelector } from "react-redux";
+import useMovementKeys from '../hooks/useMovementKeys';
+import useMouseAim from '../hooks/useMouseAim';
+import useTickInterval from '../hooks/useTickInterval';
+import useGridPosition from '../hooks/useGridPosition';
+import { useSelector } from 'react-redux';
 import { selectGameStateActive } from '../SELECTORS';
 
 const Hero = forwardRef((props, ref) => {
@@ -17,7 +17,7 @@ const Hero = forwardRef((props, ref) => {
   const {xOffset, yOffset} = useContext(AppContext);
   const gameStateActive = useSelector(selectGameStateActive);
   const { leftKeyDown, rightKeyDown, upKeyDown, downKeyDown } = useMovementKeys();
-  const { pos, updatePos } = useGridPosition("hero", initPos, updateFromHero, [boundaryCollision, sceneryCollision, npcCollision]);
+  const { pos, updatePos } = useGridPosition('hero', initPos, updateFromHero, [boundaryCollision, sceneryCollision, npcCollision]);
   const { aim, mouseDown } = useMouseAim(xOffset, yOffset, pos);
 
   const onTick = () => {
@@ -47,7 +47,7 @@ const Hero = forwardRef((props, ref) => {
 
   useEffect(() => {
     onTick();
-    console.log("Hero.onTick", gameStateActive);
+    console.log('Hero.onTick', gameStateActive);
   }, [leftKeyDown, rightKeyDown, upKeyDown, downKeyDown]);
 
   useEffect(() => {
@@ -57,11 +57,11 @@ const Hero = forwardRef((props, ref) => {
   }, [mouseDown]);
 
   return (
-    <div className="entity hero" style={{
+    <div className='entity hero' style={{
       left: `${pos.x * GRID_SIZE}px`,
       top: `${pos.y * GRID_SIZE}px`,
     }}>
-      <img src={spySprite} alt="hero" width={GRID_SIZE} height={GRID_SIZE}></img>
+      <img src={spySprite} alt='hero' width={GRID_SIZE} height={GRID_SIZE}></img>
     </div>
   );
 })
