@@ -4,10 +4,11 @@ import {
   ENTITY_MOOD
  } from "../CONSTANTS";
 import { randomIntBetween } from "../METHODS";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import enemySprite from '../images/enemy.png'
-import { GameContext } from "../screens/GameScreen";
 import useGridPosition from "../hooks/useGridPosition";
+import { useSelector } from "react-redux";
+import { selectGameStateActive } from '../SELECTORS';
 
 const ENEMY_TICK_DURATION = 1000;
 const ODDS_AGAINST_MOVING = 2;
@@ -25,7 +26,7 @@ export default function Enemy(props) {
   const [ intervalId, setIntervalId ] = useState(0);
   const [ damageTotal, setDamageTotal ] = useState(0);
   const [ aim, setAim ] = useState(npc.aim);
-  const { gameStateActive } = useContext(GameContext);
+  const gameStateActive = useSelector(selectGameStateActive);
 
   const updateAim = newAim => {
     setAim(newAim);

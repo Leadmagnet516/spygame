@@ -4,12 +4,15 @@ import {
   GAME_HEIGHT,
   EVENT_OPEN_MODAL,
   EVENT_CLOSE_MODAL,
-  APP_STATE
+  APP_STATE,
+  ACTION_CHANGE_GAME_STATE,
+  GAME_STATE
 } from './CONSTANTS';
 import SplashScreen from './screens/SplashScreen';
 import GameScreen from './screens/GameScreen';
 import { createContext, useEffect, useState } from "react";
 import usePrevious from "./hooks/usePrevious";
+import { useDispatch } from "react-redux";
 
 /* const importScreen = screen => {
   console.log("importScreen", screen);
@@ -28,6 +31,7 @@ function App() {
   const prevAppState = usePrevious(appState);
   const [ xOffset, setXOffset ] = useState(0);
   const [ yOffset, setYOffset ] = useState(0);
+  const dispatch = useDispatch();
 
   const toggleAppState = newState => {
     setAppState(newState);
@@ -35,6 +39,7 @@ function App() {
 
   const splashToGame = () => {
     setAppState(APP_STATE.GAME);
+    dispatch({ type: ACTION_CHANGE_GAME_STATE, payload: GAME_STATE.ACTIVE})
   }
 
   const handleOpenModal = () => {

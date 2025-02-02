@@ -1,10 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   GRID_SIZE,
   EVENT_BULLET_COLLISION
 } from "../CONSTANTS";
 import { pixToPos } from "../METHODS";
-import { GameContext } from "../screens/GameScreen";
+import { useSelector } from "react-redux";
+import { selectGameStateActive } from '../SELECTORS';
 
 const BULLET_SPEED = 16;
 const TICK_DURATION = 16;
@@ -17,7 +18,7 @@ export default function Bullet(props) {
     top: initPos.y * GRID_SIZE + GRID_SIZE / 2
   })
 
-  const { gameStateActive } = useContext(GameContext);
+  const gameStateActive = useSelector(selectGameStateActive);
 
   useEffect(() => {
     if (!gameStateActive) return;

@@ -2,41 +2,43 @@ import {
   GAME_WIDTH,
   GAME_HEIGHT,
   EVENT_OPEN_MODAL,
-  EVENT_CHANGE_GAME_STATE,
+  ACTION_CHANGE_GAME_STATE,
   GAME_STATE
 } from "../CONSTANTS";
-import { GameContext } from "../screens/GameScreen";
-import { useContext, useEffect } from "react";
+import { selectGameStateActive } from '../SELECTORS';
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function HudLayer(props) {
-  const { gameStateActive } = useContext(GameContext);
+  const dispatch = useDispatch();
+  const gameStateActive = useSelector(selectGameStateActive);
 
   const handleInventoryClick = e => {
     dispatchEvent(new CustomEvent(EVENT_OPEN_MODAL, {detail: { modalPurpose: "inventory" }}));
   }
 
   const handlePauseClick = () => {
-    dispatchPauseEvent();
+    dispatchPause();
   }
 
   const handleResumeClick = () => {
-    dispatchResumeEvent();
+    dispatchResume();
   }
 
-  const dispatchPauseEvent = () => {
-    dispatchEvent(new CustomEvent(EVENT_CHANGE_GAME_STATE, {detail: { newState: GAME_STATE.PAUSED}}));
+  const dispatchPause = () => {
+    dispatch({type: ACTION_CHANGE_GAME_STATE, payload: GAME_STATE.PAUSED});
   }
 
-  const dispatchResumeEvent = () => {
-    dispatchEvent(new CustomEvent(EVENT_CHANGE_GAME_STATE, {detail: { newState: GAME_STATE.ACTIVE}}));
+  const dispatchResume = () => {
+    dispatch({type: ACTION_CHANGE_GAME_STATE, payload: GAME_STATE.ACTIVE});
   }
 
   const handleKeyDown = e => {
     if (e.key === "Escape") {
       if(gameStateActive) {
-        dispatchPauseEvent();
+        dispatchPause();
       } else {
-        dispatchResumeEvent();
+        dispatchResume();
       }
     }
   }

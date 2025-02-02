@@ -12,6 +12,9 @@ export const EVENT_NPC_HIT = "HitByBullet";
 export const EVENT_NPC_DEAD = "NpcDead";
 export const EVENT_CHANGE_GAME_STATE = "ChangeGamestate";
 
+// REDUX ACTIONS
+export const ACTION_CHANGE_GAME_STATE = "game/changeState";
+
 // UI EVENTS
 export const EVENT_OPEN_MODAL = "OpenModal";
 export const EVENT_CLOSE_MODAL = "CloseModal";

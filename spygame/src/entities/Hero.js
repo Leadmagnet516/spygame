@@ -1,20 +1,21 @@
-import { forwardRef, useContext, useEffect, useState } from 'react';
+import { forwardRef, useContext, useEffect } from 'react';
 import {
   GRID_SIZE,
   EVENT_FIRE_WEAPON
 } from "../CONSTANTS";
 import spySprite from '../images/spy.png'
 import { AppContext } from '../App';
-import { GameContext } from "../screens/GameScreen";
 import useMovementKeys from "../hooks/useMovementKeys";
 import useMouseAim from "../hooks/useMouseAim";
 import useTickInterval from "../hooks/useTickInterval";
 import useGridPosition from "../hooks/useGridPosition";
+import { useSelector } from "react-redux";
+import { selectGameStateActive } from '../SELECTORS';
 
 const Hero = forwardRef((props, ref) => {
   const { initPos, boundaryCollision, sceneryCollision, npcCollision, updateFromHero } = props;
   const {xOffset, yOffset} = useContext(AppContext);
-  const { gameStateActive } = useContext(GameContext);
+  const gameStateActive = useSelector(selectGameStateActive);
   const { leftKeyDown, rightKeyDown, upKeyDown, downKeyDown } = useMovementKeys();
   const { pos, updatePos } = useGridPosition("hero", initPos, updateFromHero, [boundaryCollision, sceneryCollision, npcCollision]);
   const { aim, mouseDown } = useMouseAim(xOffset, yOffset, pos);
@@ -46,6 +47,7 @@ const Hero = forwardRef((props, ref) => {
 
   useEffect(() => {
     onTick();
+    console.log("Hero.onTick", gameStateActive);
   }, [leftKeyDown, rightKeyDown, upKeyDown, downKeyDown]);
 
   useEffect(() => {
