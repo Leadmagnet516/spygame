@@ -15,7 +15,7 @@ import { selectGameStateActive } from '../SELECTORS';
 import { useDispatch } from 'react-redux';
 
 export default function Hero(props, ref) {
-  const { initPos, boundaryCollision, sceneryCollision, npcCollision, updateFromHero } = props;
+  const { initPos, boundaryCollision, sceneryCollision, npcCollision } = props;
   const {xOffset, yOffset} = useContext(AppContext);
   const gameStateActive = useSelector(selectGameStateActive);
   const { leftKeyDown, rightKeyDown, upKeyDown, downKeyDown, spaceKeyDown } = useKeyboardControl();

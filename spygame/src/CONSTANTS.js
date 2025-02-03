@@ -15,7 +15,7 @@ export const GRID_WIDTH = 24;
 export const GRID_HEIGHT = 16;
 export const GAME_WIDTH = GRID_SIZE * GRID_WIDTH;
 export const GAME_HEIGHT = GRID_SIZE * GRID_HEIGHT;
-export const TICK_MS = 250;
+export const TICK_MS = 80;
 
 // GAME EVENTS
 export const EVENT_FIRE_WEAPON = 'FireWeapon';
@@ -35,13 +35,6 @@ export const ACTION_SET_SCENERY_BLOCKS = 'game/setSceneryBlocks';
 // UI EVENTS
 export const EVENT_OPEN_MODAL = 'OpenModal';
 export const EVENT_CLOSE_MODAL = 'CloseModal';
-
-// ENTITIES
-export const ENTITY_UPDATE = {
-  MOVE: 'Move',
-  DEAD: 'Dead',
-  AIM: 'Aim'
-}
 
 export const ENTITY_MOOD = {
   OK: 'OK',

@@ -1,10 +1,8 @@
 import {
   GRID_SIZE,
-  ENTITY_UPDATE,
   ENTITY_MOOD,
   ACTION_UPDATE_NPC_STATE
  } from '../CONSTANTS';
-import { randomIntBetween } from '../METHODS';
 import { useEffect, useState } from 'react';
 import enemySprite from '../images/enemy.png'
 import useGridPosition from '../hooks/useGridPosition';

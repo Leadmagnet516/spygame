@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { ENTITY_UPDATE } from '../CONSTANTS';
 
 export default function useGridPosition(id, initPos, collisionTestCallbacks) {
   const [ pos, setPos ] = useState(initPos);

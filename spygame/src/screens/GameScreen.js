@@ -13,14 +13,9 @@ import {
   ACTION_CHANGE_GAME_STATE,
   EVENT_OPEN_MODAL,
   EVENT_CLOSE_MODAL,
-  ENTITY_UPDATE
 } from '../CONSTANTS';
-import {
-  angleBetween,
-  distanceBetween
- } from '../METHODS';
 import * as Level from '../world/levels/1/1_Silo.json';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectPrevGameState, selectGameStateActive, selectHeroState, selectNpcStates, selectSceneryBlocks } from '../SELECTORS';
 
@@ -101,44 +96,6 @@ export default function GameScreen( props ) {
     return collision;
   }
 
-  const sceneryJuxt = pos => {
-    return sceneryBlocks.map(scn => {
-      return {
-        angle1: angleBetween(pos, {x: scn.x1, y: scn.y1}),
-        angle2: angleBetween(pos, {x: scn.x2, y: scn.y2}),
-        dist: distanceBetween(pos, {x: scn.x1, y: scn.y1}),
-      }
-    });
-  }
-
-  // INTER-LAYER INTERACTIONS
-  const [ susList, setSusList ] = useState([
-    {
-      id: 'hero',
-      type: 'foe',
-      pos: InitHero.pos
-    }
-  ]);
-
-  const updateFromHero = (id, type, props) => {
-    /* if (type === ENTITY_UPDATE.MOVE) {
-      setHeroPos(props.pos);
-    }
-    setSusList(susList => {
-      return susList.map(sus => {
-        if (sus.id === id) {
-          return {
-            ...sus,
-            pos: props.pos
-          }
-        } else {
-          return sus;
-        }
-      })
-    }); */
-  }
-  
-
   // GAMESTATE MANAGEMENT
   const handleOpenModal = e => {
     if (gameStateActive) {
@@ -172,8 +129,8 @@ export default function GameScreen( props ) {
   return (
     <div className='game-screen' style={{width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`, position: 'absolute'}}>
       <SceneryLayer ref={sceneryLayerRef} scenery={Scenery}></SceneryLayer>
-      <NpcLayer ref={npcLayerRef} initNpcs={Npcs} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} entityCollision={entityCollision} sceneryJuxt={sceneryJuxt}></NpcLayer>
-      <Hero ref={heroRef} initPos={InitHero.pos} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} npcCollision={npcCollision} updateFromHero={updateFromHero}></Hero>
+      <NpcLayer ref={npcLayerRef} initNpcs={Npcs} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} entityCollision={entityCollision}></NpcLayer>
+      <Hero ref={heroRef} initPos={InitHero.pos} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} npcCollision={npcCollision}></Hero>
       <FxLayer ref={fxLayerRef} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} entityCollision={entityCollision}></FxLayer>
       <HudLayer ref={hudLayerRef}>
         <div style={{position: "absolute", width: `${GRID_SIZE}px`, height: `${GRID_SIZE}px`, left: `${Objective.objectiveMarker.x * GRID_SIZE +10}px`, top: `${Objective.objectiveMarker.y * GRID_SIZE}px`, color: "#F00", fontWeight: "bold", fontSize: "24px"}}>
