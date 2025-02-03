@@ -1,14 +1,16 @@
 import {
   GRID_SIZE,
   ENTITY_UPDATE,
-  ENTITY_MOOD
+  ENTITY_MOOD,
+  ACTION_UPDATE_NPC_STATE
  } from '../CONSTANTS';
 import { randomIntBetween } from '../METHODS';
 import { useEffect, useState } from 'react';
 import enemySprite from '../images/enemy.png'
 import useGridPosition from '../hooks/useGridPosition';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectGameStateActive } from '../SELECTORS';
+import useSusDetection from '../hooks/useSusDetection';
 
 const ENEMY_TICK_DURATION = 1000;
 const ODDS_AGAINST_MOVING = 2;
@@ -17,72 +19,51 @@ const MAX_AIM_CHANGE = 1;
 const BASE_HITPOINTS = 100;
 
 export default function Enemy(props) {
-  const { npc, damageTaken, boundaryCollision, sceneryCollision, entityCollision, updateFromNpc } = props;
-  const { id, fov, mood } = npc;
-  const [ alive, setAlive ] = useState(true);
-  const { pos, updatePos } = useGridPosition(npc.id, npc.pos, updateFromNpc, [boundaryCollision, sceneryCollision, entityCollision]);
+  const { npc, damageTaken, alive, boundaryCollision, sceneryCollision, entityCollision, susList } = props;
+  const { id, fov } = npc;
+  const [ mood, setMood ] = useState(npc.mood);
+  const { pos, updatePos } = useGridPosition(id, npc.pos, [boundaryCollision, sceneryCollision, entityCollision]);
   const [ flash, setFlash ] = useState(false);
-  const [ health, setHealth ] = useState(BASE_HITPOINTS);
-  const [ intervalId, setIntervalId ] = useState(0);
-  const [ damageTotal, setDamageTotal ] = useState(0);
   const [ aim, setAim ] = useState(npc.aim);
   const gameStateActive = useSelector(selectGameStateActive);
+  const dispatch = useDispatch();
+  const { checkSus } = useSusDetection();
 
   const updateAim = newAim => {
     setAim(newAim);
-    updateFromNpc(id, ENTITY_UPDATE.AIM, {aim: newAim});
   }
 
-  const handleHit = damage => {
-    setHealth(health - damage);
-    if(health <= 0) {
-      setAlive(false);
-    }
+  const handleHit = () => {
     setFlash(true);
     setTimeout(() => {
       setFlash(false);
     }, 50);
   }
 
-  const moveRandom = () => {
-    if(Math.random() * ODDS_AGAINST_MOVING < 1) {
-      updatePos(randomIntBetween(-1, 1), randomIntBetween(-1, 1));
-    }
-  }
-
-  const aimRandom = () => {
-    if(Math.random() * ODDS_AGAINST_AIMING < 1) {
-      updateAim(aim + (Math.random() * MAX_AIM_CHANGE - MAX_AIM_CHANGE - 2));
-    }
-  }
-
-  const doRandomStuff = () => {
-    moveRandom();
-    aimRandom();
-  }
-
   useEffect(() => {
     if(!alive) {
-      updateFromNpc(id, ENTITY_UPDATE.DEAD);
-      clearInterval(intervalId);
       return(() => {})
     }
-    
-  }, [alive])
+    handleHit();
+  }, [damageTaken, alive])
 
   useEffect(() => {
-    if (alive && damageTaken > damageTotal) {
-      handleHit(20);
-      setDamageTotal(damageTaken);
+    dispatch({ type: ACTION_UPDATE_NPC_STATE, payload: {id, pos}})
+  }, [pos])
+
+  useEffect(() => {
+    const susInView = checkSus(npc, susList);
+    if (susInView.length > 0 && mood !== ENTITY_MOOD.COMBAT) {
+      setMood(ENTITY_MOOD.COMBAT);
+      dispatch({ type: ACTION_UPDATE_NPC_STATE, payload: {mood: ENTITY_MOOD.COMBAT}})
+    } else if (susInView.length === 0 && mood === ENTITY_MOOD.COMBAT) {
+      setMood(ENTITY_MOOD.OK);
+      dispatch({ type: ACTION_UPDATE_NPC_STATE, payload: {mood: ENTITY_MOOD.OK}})
     }
-  }, [damageTaken]);
+  }, susList)
 
   useEffect(() => {
-   /*  if (gameStateActive && !intervalId) {
-      setIntervalId(setInterval(doRandomStuff, ENEMY_TICK_DURATION));
-    } else if (!gameStateActive && intervalId) {
-      setIntervalId(clearInterval(intervalId));
-    } */
+    // TODO: Implement pathing
   }, [gameStateActive])
 
   let fovWidth = fov.range * GRID_SIZE;
@@ -92,7 +73,6 @@ export default function Enemy(props) {
       position: 'absolute',
       left: `${pos.x * GRID_SIZE}px`,
       top: `${pos.y * GRID_SIZE}px`,
-      //filter: `${flash ? 'brightness(1.5)' : 'brightness(1)'} ${npc.kind !== 'technician' ? 'hue-rotate(90deg)' : 'hue-rotate(0deg)'})`,
       filter: `brightness(${flash ? '1.5' : '1'}) hue-rotate(${npc.kind === 'technician' ? '90deg' : '0deg'})`,
       transform: `${alive ? 'none' : 'rotate(90deg)'}`
     }}>

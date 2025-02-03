@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 
-export default function useMovementKeys() {
+export default function useKeyboardControl() {
   const [ leftKeyDown, setLeftKeyDown ] = useState(false);
   const [ rightKeyDown, setRightKeyDown ] = useState(false);
   const [ upKeyDown, setUpKeyDown ] = useState(false);
   const [ downKeyDown, setDownKeyDown ] = useState(false);
+  const [ spaceKeyDown, setSpaceKeyDown ] = useState(false);
 
   const handleKeyDown = e => {
     if ((e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') && !leftKeyDown) {
@@ -18,6 +19,9 @@ export default function useMovementKeys() {
     }
     if ((e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') && !downKeyDown) {
       setDownKeyDown(true);
+    }
+    if (e.code === 'Space' && !spaceKeyDown) {
+      setSpaceKeyDown(true);
     }
   }
 
@@ -34,6 +38,9 @@ export default function useMovementKeys() {
     if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
       setDownKeyDown(false);
     }
+    if (e.code === 'Space') {
+      setSpaceKeyDown(false);
+    }
   }
 
   useEffect(() => {
@@ -45,5 +52,5 @@ export default function useMovementKeys() {
     };
   })
 
-  return { leftKeyDown, rightKeyDown, upKeyDown, downKeyDown};
+  return { leftKeyDown, rightKeyDown, upKeyDown, downKeyDown, spaceKeyDown};
 }

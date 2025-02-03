@@ -1,4 +1,6 @@
 import { GRID_SIZE, GRID_HEIGHT, GRID_WIDTH } from './CONSTANTS';
+import { useSelector } from 'react-redux';
+import { selectSceneryBlocks } from './SELECTORS';
 
 export const randomIntBetween = (min, max) => {
   const range = max - min;

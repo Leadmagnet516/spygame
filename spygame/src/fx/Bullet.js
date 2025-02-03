@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import {
   GRID_SIZE,
-  EVENT_BULLET_COLLISION
+  EVENT_BULLET_COLLISION,
+  ACTION_RECORD_ENTITY_DAMAGE
 } from '../CONSTANTS';
 import { pixToPos } from '../METHODS';
 import { useSelector } from 'react-redux';
 import { selectGameStateActive } from '../SELECTORS';
+import { useDispatch } from 'react-redux';
 
 const BULLET_SPEED = 16;
 const TICK_DURATION = 16;
@@ -19,6 +21,7 @@ export default function Bullet(props) {
   })
 
   const gameStateActive = useSelector(selectGameStateActive);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!gameStateActive) return;
@@ -31,6 +34,7 @@ export default function Bullet(props) {
       
       if (entityCollisionId) {
         dispatchEvent(new CustomEvent(EVENT_BULLET_COLLISION, {detail: {bulletId: id, victimId: entityCollisionId, damage: BULLET_DAMAGE}}))
+        dispatch({ type: ACTION_RECORD_ENTITY_DAMAGE, payload: {victimId: entityCollisionId, damage: BULLET_DAMAGE}})
         return() => {};
       }
 

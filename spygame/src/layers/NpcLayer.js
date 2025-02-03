@@ -1,53 +1,40 @@
 import {
   GAME_WIDTH,
   GAME_HEIGHT,
-  EVENT_NPC_HIT,
-  ENTITY_UPDATE,
-  ENTITY_MOOD
+  ENTITY_MOOD,
+  ACTION_SET_NPCS,
+  ACTION_UPDATE_NPC_STATE
  } from '../CONSTANTS';
  import {
   angleBetween,
   distanceBetween,
-  angleIsWithinArc
+  angleIsWithinArc,
  } from '../METHODS';
+ import { selectNpcStates, selectSusList } from '../SELECTORS';
  import Enemy from '../entities/Enemy';
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
-import { GameContext } from '../screens/GameScreen';
+import { useEffect  } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-const NpcLayer = forwardRef((props, ref) => {
-  const { initNpcs, susList, boundaryCollision, sceneryCollision, heroCollision, sceneryJuxt } = props;
-  const [ npcs, setNpcs ] = useState(initNpcs.map((npc, idx) => {
-    return {
-      id: `npc_${idx}`,
-      ...npc,
-      damageTaken: 0,
-      alive: true,
-      mood: ENTITY_MOOD.OK
-    }
-  }));
+export default function NpcLayer(props, ref)  {
+  const { initNpcs, boundaryCollision, sceneryCollision, heroCollision } = props;
+  const npcStates = useSelector(selectNpcStates);
+  const susList = useSelector(selectSusList);
+  const dispatch = useDispatch();
 
-  useImperativeHandle(ref, () => ({
-    getNpcs() {
-      return npcs;
-    }
-  }));
-
-  const handleNpcHit = e => {
-    const { id, damage } = e.detail;
-    setNpcs(npcs.map(npc => {
-      if(npc.id === id) {
-        return {
-          ...npc,
-          damageTaken: npc.damageTaken + damage
-        }
-      } else {
-        return npc;
+  useEffect(() => {
+    dispatch({ type: ACTION_SET_NPCS, payload: (initNpcs.map((npc, idx) => {
+      return {
+        id: `npc_${idx}`,
+        ...npc,
+        damageTaken: 0,
+        alive: true,
+        mood: ENTITY_MOOD.OK
       }
-    }));
-  }
+    }))})
+  }, [])
 
   const checkSusList = npc => {
-    let susInView = [];
+    /* let susInView = [];
     susList.forEach(sus => {
       npc.mood = ENTITY_MOOD.OK;  // Temporary; implement a cooldown timer
 
@@ -93,13 +80,13 @@ const NpcLayer = forwardRef((props, ref) => {
           break;
         default:
       }
-    })
+    }) */
 
     return npc;
   }
 
   const updateFromNpc = (id, updateType, props) => {
-    setNpcs(npcs.map(npc => {
+    /* setNpcs(npcs.map(npc => {
       if(npc.id === id) {
         let updatedNpc;
         switch(updateType) {
@@ -129,23 +116,15 @@ const NpcLayer = forwardRef((props, ref) => {
       } else {
         return npc;
       }
-    }));
+    })); */
   }
-
+/* 
   useEffect(() => {
-    npcs.forEach(npc => {
+    npcStates.forEach(npc => {
       checkSusList(npc);
     })
   }, [susList])
-
-  // LISTENERS
-  useEffect(() => {
-    window.addEventListener(EVENT_NPC_HIT, handleNpcHit);
-    return(() => {
-      window.removeEventListener(EVENT_NPC_HIT, handleNpcHit);
-    })
-  });
-
+ */
   // TEMPLATE
   return (
     <div className='npc-layer' style={{
@@ -153,14 +132,12 @@ const NpcLayer = forwardRef((props, ref) => {
       height: `${GAME_HEIGHT}px`
     }}>
       {
-        npcs.map((npc, idx) => {
+        npcStates.map((npc, idx) => {
           return (
-            <Enemy key={npc.id} npc={npc} damageTaken={npc.damageTaken} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} heroCollision={heroCollision} updateFromNpc={updateFromNpc}></Enemy>
+            <Enemy key={npc.id} npc={npc} damageTaken={npc.damageTaken} alive={npc.alive} mood={npc.mood} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} heroCollision={heroCollision} susList={susList}></Enemy>
           )
         })
       }
     </div>
   );
-})
-
-export default NpcLayer;
+}

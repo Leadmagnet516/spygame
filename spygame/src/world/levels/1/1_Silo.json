@@ -1,4 +1,20 @@
 {
+  "Objective": {
+    "kind": "interact",
+    "description": "Plant explosives on the rocket",
+    "momentDescription": "[ Space ] Plant C4",
+    "objectivePos": {
+      "x1": 20,
+      "y1": 12,
+      "x2": 21,
+      "y2": 13
+    },
+    "objectiveMarker": {
+      "marker": "X",
+      "x": 21,
+      "y": 12
+    }
+  },
   "Scenery": [
     {
       "x1": 0,
@@ -161,6 +177,7 @@
   "Npcs": [
     {
       "kind": "guard",
+      "hitPoints": 100,
       "pos": {
         "x": 8,
         "y": 8
@@ -173,6 +190,7 @@
     },
     {
       "kind": "guard",
+      "hitPoints": 100,
       "pos": {
         "x": 10,
         "y": 12
@@ -185,6 +203,7 @@
     },
     {
       "kind": "guard",
+      "hitPoints": 100,
       "pos": {
         "x": 19,
         "y": 4
@@ -197,6 +216,7 @@
     },
     {
       "kind": "guard",
+      "hitPoints": 100,
       "pos": {
         "x": 7,
         "y": 2
@@ -209,6 +229,7 @@
     },
     {
       "kind": "technician",
+      "hitPoints": 50,
       "pos": {
         "x": 12,
         "y": 12
@@ -221,6 +242,7 @@
     },
     {
       "kind": "technician",
+      "hitPoints": 50,
       "pos": {
         "x": 12,
         "y": 14
@@ -233,6 +255,7 @@
     },
     {
       "kind": "technician",
+      "hitPoints": 50,
       "pos": {
         "x": 10,
         "y": 1

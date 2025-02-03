@@ -1,13 +1,20 @@
 import {
-  GRID_SIZE,
   GAME_WIDTH,
-  GAME_HEIGHT
+  GAME_HEIGHT,
+  ACTION_SET_SCENERY_BLOCKS
 } from '../CONSTANTS';
 import siloBg from '../world/levels/1/Silo.png';
-import { GameContext } from '../screens/GameScreen';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 export default function SceneryLayer(props) {
   const { scenery } = props;
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({ type: ACTION_SET_SCENERY_BLOCKS, payload: scenery});
+  })
+  
   return (
     <div className='scenery_layer' style={{
       width: `${GAME_WIDTH}px`,

@@ -1,27 +1,27 @@
-import { useState } from 'react';
-import { ENTITY_MOOD } from '../CONSTANTS';
 import { angleBetween, angleIsWithinArc, distanceBetween } from '../METHODS';
+import { useSelector } from 'react-redux';
+import { selectSceneryBlocks } from '../SELECTORS';
 
-export default function useSusList() {
-  const [ susList, setSusList ] = useState([]);
+export default function useSusDetection() {
+  const sceneryBlocks = useSelector(selectSceneryBlocks);
 
-  function addSus(sus) {
-    setSusList(a => [...a, sus]);
+  const sceneryJuxt = pos => {
+    return sceneryBlocks.map(scn => {
+      return {
+        angle1: angleBetween(pos, {x: scn.x1, y: scn.y1}),
+        angle2: angleBetween(pos, {x: scn.x2, y: scn.y2}),
+        dist: distanceBetween(pos, {x: scn.x1, y: scn.y1}),
+      }
+    });
   }
 
-  function updateSus(id, ...props) {
-
-  }
-
-  function checkSusList(npc, sceneryJuxt) {
+  const checkSus = (npc, susList) => {
     let susInView = [];
     susList.forEach(sus => {
-      npc.mood = ENTITY_MOOD.OK;  // Temporary; implement a cooldown timer
-
-      // CHECK WHETHER SUS IS OUTSIDE NPC'S VISUAL RANGE
+       // CHECK WHETHER SUS IS OUTSIDE NPC'S VISUAL RANGE
       const dist = distanceBetween(sus.pos, npc.pos) 
       if (dist > npc.fov.range) {
-        return npc;
+        return;
       }
 
       // CHECK WHETHER SUS IS OUTSIDE NPC'S ANGLE OF VISION
@@ -30,7 +30,7 @@ export default function useSusList() {
       const npcArcLimit1 = npc.aim - halfFov;
       const npcArcLimit2 = npc.aim + halfFov;
       if(!angleIsWithinArc(dir, npcArcLimit1, npcArcLimit2)) {
-        return npc;
+        return;
       }
 
       // CHECK WHETHER NPC'S VIEW OF SUS IS BLOCKED BY SCENERY
@@ -46,24 +46,15 @@ export default function useSusList() {
       })
 
       if (blocked) {
-        return npc;
+        return;
       }
 
       // ACT ON SUS-NESS!
       susInView.push(sus);
-      switch(sus.type) {
-        case 'foe':
-          npc.mood = ENTITY_MOOD.COMBAT;
-          break;
-        case 'hazard':
-          npc.mood = ENTITY_MOOD.SUS;
-          break;
-        default:
-      }
     })
 
-    return npc;
+    return susInView;
   }
 
-  return {addSus, checkSusList}
+  return {checkSus}
 }

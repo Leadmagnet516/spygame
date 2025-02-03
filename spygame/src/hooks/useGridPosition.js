@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ENTITY_UPDATE } from '../CONSTANTS';
 
-export default function useGridPosition(id, initPos, parentCallback, collisionTestCallbacks) {
+export default function useGridPosition(id, initPos, collisionTestCallbacks) {
   const [ pos, setPos ] = useState(initPos);
   const [ collisionVictimId, setCollisionVictimId ] = useState('');
 
@@ -21,7 +21,6 @@ export default function useGridPosition(id, initPos, parentCallback, collisionTe
       setCollisionVictimId(collision);
     } else {
       setPos(newPos);
-      parentCallback(id, ENTITY_UPDATE.MOVE, {pos});
       setCollisionVictimId('');
     }
   }
