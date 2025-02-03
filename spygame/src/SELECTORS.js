@@ -8,3 +8,4 @@ export const selectHeroState = state => state.heroState;
 export const selectNpcStates = state => state.npcStates;
 export const selectSceneryBlocks = state => state.sceneryBlocks;
 export const selectSusList = state => state.susList;
+export const selectObjectiveCompleted = state => state.objectiveCompleted;

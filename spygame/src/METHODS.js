@@ -1,6 +1,4 @@
 import { GRID_SIZE, GRID_HEIGHT, GRID_WIDTH } from './CONSTANTS';
-import { useSelector } from 'react-redux';
-import { selectSceneryBlocks } from './SELECTORS';
 
 export const randomIntBetween = (min, max) => {
   const range = max - min;
@@ -23,6 +21,15 @@ export const posToPix = pos => {
     left: pos.x * GRID_SIZE,
     top: pos.y * GRID_SIZE
   }
+}
+
+export const posIsInArea = (pos, area) => {
+  return (
+    pos.x >= area.x1 &&
+    pos.x <= area.x2 &&
+    pos.y >= area.y1 &&
+    pos.y <= area.y2
+  )
 }
 
 export const radToDeg = rad => {

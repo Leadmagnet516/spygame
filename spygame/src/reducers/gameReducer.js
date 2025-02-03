@@ -6,12 +6,16 @@ import {
   ACTION_RECORD_ENTITY_DAMAGE,
   ACTION_UPDATE_NPC_STATE,
   ACTION_SET_SCENERY_BLOCKS,
+  ACTION_OBJECTIVE_COMPLETED,
   SUS_KINDS
 } from '../CONSTANTS';
 
 const initialGameState = {
   gameState: GAME_STATE.INACTIVE,
   prevGameState: null,
+  objectiveCompleted: false,
+  hudInstructions: '',
+  hudMarkers: [],
   sceneryBlocks: [],
   heroState: {
     pos: {
@@ -105,6 +109,9 @@ export default function gameReducer(state = initialGameState, action) {
 
     case ACTION_SET_SCENERY_BLOCKS :
       return { ...state, sceneryBlocks: action.payload }
+
+    case ACTION_OBJECTIVE_COMPLETED :
+      return { ...state, objectiveCompleted: action.payload}
 
     default:
       return state

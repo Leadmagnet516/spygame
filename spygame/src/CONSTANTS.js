@@ -7,7 +7,8 @@ export const APP_STATE = {
 export const GAME_STATE = {
   INACTIVE: 'InactiveState',
   ACTIVE: 'ActiveState',
-  PAUSED: 'PausedState'
+  PAUSED: 'PausedState',
+  LEAVING: 'LeavingState'
 }
 
 export const GRID_SIZE = 48;
@@ -23,6 +24,7 @@ export const EVENT_BULLET_COLLISION = 'BulletCollision';
 export const EVENT_NPC_HIT = 'HitByBullet';
 export const EVENT_NPC_DEAD = 'NpcDead';
 export const EVENT_CHANGE_GAME_STATE = 'ChangeGamestate';
+export const EVENT_HERO_INTERACT = 'HeroInteract';
 
 // REDUX ACTIONS
 export const ACTION_CHANGE_GAME_STATE = 'game/changeState';
@@ -31,6 +33,7 @@ export const ACTION_UPDATE_NPC_STATE = 'game/changeNpcState';
 export const ACTION_RECORD_ENTITY_DAMAGE = 'game/recordEntityDamage';
 export const ACTION_SET_NPCS = 'game/setNpcs';
 export const ACTION_SET_SCENERY_BLOCKS = 'game/setSceneryBlocks';
+export const ACTION_OBJECTIVE_COMPLETED ='game/objectiveCompleted';
 
 // UI EVENTS
 export const EVENT_OPEN_MODAL = 'OpenModal';

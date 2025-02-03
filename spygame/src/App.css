@@ -110,6 +110,13 @@ body {
   position: absolute;
 }
 
+/* HUD */
+.hud-layer .description {
+  background-color: #000;
+  color: #fff;
+  font-weight: bold;
+  padding: 5px;
+}
 .hud-layer > div {
   position: absolute;
 }

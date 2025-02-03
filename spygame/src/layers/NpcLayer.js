@@ -10,7 +10,7 @@ import { useEffect  } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function NpcLayer(props, ref)  {
-  const { initNpcs, boundaryCollision, sceneryCollision, heroCollision } = props;
+  const { initNpcs, boundaryCollision, sceneryCollision, heroCollision, reset } = props;
   const npcStates = useSelector(selectNpcStates);
   const susList = useSelector(selectSusList);
   const dispatch = useDispatch();

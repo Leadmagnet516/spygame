@@ -2,6 +2,7 @@ import { useContext, useEffect } from 'react';
 import {
   GRID_SIZE,
   EVENT_FIRE_WEAPON,
+  EVENT_HERO_INTERACT,
   ACTION_UPDATE_HERO_STATE
 } from '../CONSTANTS';
 import spySprite from '../images/spy.png'
@@ -25,6 +26,8 @@ export default function Hero(props, ref) {
 
   const onTick = () => {
     if (!gameStateActive) return;
+
+    // MOVEMENT
     let movement = {hor: 0, ver: 0};
 
     if (leftKeyDown) {
@@ -39,7 +42,6 @@ export default function Hero(props, ref) {
     if (downKeyDown) {
       movement.ver += 1;
     }
- 
     if (movement.hor !== 0 || movement.ver !== 0) {
       updatePos(movement)
     }
@@ -48,14 +50,21 @@ export default function Hero(props, ref) {
   useTickInterval(onTick);
 
   useEffect(() => {
+    // TODO: Make hero's speed more consistent
     onTick();
-  }, [leftKeyDown, rightKeyDown, upKeyDown, downKeyDown, spaceKeyDown]);
+  }, [leftKeyDown, rightKeyDown, upKeyDown, downKeyDown]);
 
   useEffect(() => {
     if(mouseDown) {
       dispatchEvent(new CustomEvent(EVENT_FIRE_WEAPON, {detail: {pos, aim}}))
     }
   }, [mouseDown]);
+
+  useEffect(() => {
+    if(spaceKeyDown) {
+      dispatchEvent(new CustomEvent(EVENT_HERO_INTERACT, { detail: {pos, aim}}))
+    }
+  }, [spaceKeyDown]);
 
   useEffect(() => {
     dispatch({ type: ACTION_UPDATE_HERO_STATE, payload: {pos}})

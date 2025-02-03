@@ -45,6 +45,10 @@ function App() {
     setAppState(prevAppState);
   }
 
+  const handleLeaveGame = () => {
+    setAppState(APP_STATE.SPLASH);
+  }
+
   const handleWindowResize = () => {
     setXOffset((window.innerWidth - GAME_WIDTH) / 2);
     setYOffset(20);
@@ -77,7 +81,7 @@ function App() {
             <SplashScreen splashToGame={splashToGame}></SplashScreen>
           </div>
             <div className='game-screen-container container' style={{display: appState === APP_STATE.GAME ? 'block' : 'none'}}>
-              <GameScreen appInGameState={appState === APP_STATE.GAME} ></GameScreen>
+              <GameScreen appInGameState={appState === APP_STATE.GAME} handleLeaveGame={handleLeaveGame} ></GameScreen>
             </div>
           <div className='modal-layer-container container' style={{display: appState === APP_STATE.MODAL ? 'block' : 'none'}}>
             <button type='button' onClick={handleCloseModal}>Close Modal</button>

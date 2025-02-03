@@ -3,7 +3,8 @@
     "kind": "interact",
     "description": "Plant explosives on the rocket",
     "momentDescription": "[ Space ] Plant C4",
-    "objectivePos": {
+    "postDescription": "Escape the facility!",
+    "objectiveArea": {
       "x1": 20,
       "y1": 12,
       "x2": 21,
@@ -15,6 +16,25 @@
       "y": 12
     }
   },
+  "Entrances": [
+    {
+      "boundary": "left",
+      "pos": {
+        "x": 1,
+        "y": 12
+      }
+    }
+  ],
+  "Exits": [
+    {
+      "boundary": "left",
+      "locked": false,
+      "pos": {
+        "x": 0,
+        "y": 12
+      }
+    }
+  ],
   "Scenery": [
     {
       "x1": 0,

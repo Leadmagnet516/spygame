@@ -53,16 +53,11 @@ export default function HudLayer(props) {
       height: `${GAME_HEIGHT}px`,
       position: 'absolute'
     }}>
-      <div className="sceneryOverlay">
-        { props.children}
-      </div>
-      <div className='top left'></div>
       <div className='top right'>
         <button type='button' onClick={handlePauseClick} style={{ display: gameStateActive ? 'block' : 'none'}}>[ Esc ] Pause</button>
         <button type='button' onClick={handleResumeClick} style={{ display: gameStateActive ? 'none' : 'block'}}>[ Esc ] Resume</button>
       </div>
-      <div className='bottom left'></div>
-      <div className='bottom right'></div>
+      { props.children}
     </div>
   );
 }
