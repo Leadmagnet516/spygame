@@ -19,7 +19,9 @@ import {
 import {
   posIsInArea
 } from '../METHODS';
-import * as Level from '../world/levels/1/1_Silo.json';
+import * as Level from '../world/levels/1/silo.json';
+import Scenery from '../world/levels/1/siloScenery.json';
+import Npcs from '../world/levels/1/siloNpc_DEV.json';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectPrevGameState, selectGameStateActive, selectHeroState, selectNpcStates, selectSceneryBlocks, selectObjectiveCompleted } from '../SELECTORS';
@@ -43,7 +45,7 @@ export default function GameScreen( props ) {
   const hudLayerRef = useRef(REF_HUD);
 
   // LEVEL ATTRIBUTES
-  const { Objective, Scenery, Npcs, Entrances, Exits } = Level;
+  const { Objective, Entrances, Exits } = Level;
   const initHero = Entrances[0];
 
   // COLLISION DETECTION

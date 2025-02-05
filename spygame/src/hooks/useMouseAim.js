@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { GRID_SIZE } from '../CONSTANTS';
-import { angleBetween } from '../METHODS';
+import { angleBetweenPos } from '../METHODS';
 
 export default function useMouseAim(xOffset, yOffset, pos) {
   const [ aim, setAim ] = useState(0);
   const [ mouseDown, setMouseDown ] = useState(false);
 
   const handleMouseMove = e => {
-    setAim(angleBetween({x: pos.x * GRID_SIZE + GRID_SIZE / 2, y: pos.y * GRID_SIZE + GRID_SIZE / 2}, {x: e.clientX - xOffset, y: e.clientY - yOffset}));
+    setAim(angleBetweenPos({x: pos.x * GRID_SIZE + GRID_SIZE / 2, y: pos.y * GRID_SIZE + GRID_SIZE / 2}, {x: e.clientX - xOffset, y: e.clientY - yOffset}));
   }
 
   const handleMouseDown = e => {

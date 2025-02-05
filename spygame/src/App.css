@@ -81,9 +81,18 @@ body {
 .npc-layer, .scenery-layer, .fx-layer {
   position: absolute;
 }
+
 .entity {
   position: absolute;
-  transition: left .1s linear, top .1s linear;
+  transition: left .16s linear, top .16s linear;
+}
+
+.hero {
+  transition: left .16s linear, top .16s linear;
+}
+
+.enemy {
+  transition: left .25s linear, top .25s linear;
 }
 
 .scenery {
@@ -92,7 +101,6 @@ body {
 
 .fov-cone {
   position: absolute;
-  transition: transform .5s ease-in-out
 }
 
 .fov-boundary {

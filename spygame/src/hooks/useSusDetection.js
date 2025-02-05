@@ -1,4 +1,4 @@
-import { angleBetween, angleIsWithinArc, distanceBetween } from '../METHODS';
+import { angleBetweenPos, angleIsWithinArc, distanceBetween } from '../METHODS';
 import { useSelector } from 'react-redux';
 import { selectSceneryBlocks } from '../SELECTORS';
 
@@ -8,8 +8,8 @@ export default function useSusDetection() {
   const sceneryJuxt = pos => {
     return sceneryBlocks.map(scn => {
       return {
-        angle1: angleBetween(pos, {x: scn.x1, y: scn.y1}),
-        angle2: angleBetween(pos, {x: scn.x2, y: scn.y2}),
+        angle1: angleBetweenPos(pos, {x: scn.x1, y: scn.y1}),
+        angle2: angleBetweenPos(pos, {x: scn.x2, y: scn.y2}),
         dist: distanceBetween(pos, {x: scn.x1, y: scn.y1}),
       }
     });
@@ -25,7 +25,7 @@ export default function useSusDetection() {
       }
 
       // CHECK WHETHER SUS IS OUTSIDE NPC'S ANGLE OF VISION
-      const dir = angleBetween(npc.pos, sus.pos);
+      const dir = angleBetweenPos(npc.pos, sus.pos);
       const halfFov = npc.fov.field / 2;
       const npcArcLimit1 = npc.aim - halfFov;
       const npcArcLimit2 = npc.aim + halfFov;

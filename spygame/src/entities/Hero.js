@@ -3,7 +3,8 @@ import {
   GRID_SIZE,
   EVENT_FIRE_WEAPON,
   EVENT_HERO_INTERACT,
-  ACTION_UPDATE_HERO_STATE
+  ACTION_UPDATE_HERO_STATE,
+  HERO_MOVE_MS
 } from '../CONSTANTS';
 import spySprite from '../images/spy.png'
 import { AppContext } from '../App';
@@ -11,9 +12,9 @@ import useKeyboardControl from '../hooks/useKeyboardControls';
 import useMouseAim from '../hooks/useMouseAim';
 import useTickInterval from '../hooks/useTickInterval';
 import useGridPosition from '../hooks/useGridPosition';
-import { useSelector } from 'react-redux';
+import { useState } from 'react';
 import { selectGameStateActive } from '../SELECTORS';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 
 export default function Hero(props, ref) {
   const { initPos, boundaryCollision, sceneryCollision, npcCollision } = props;
@@ -24,7 +25,7 @@ export default function Hero(props, ref) {
   const { aim, mouseDown } = useMouseAim(xOffset, yOffset, pos);
   const dispatch = useDispatch();
 
-  const onTick = () => {
+  const onMoveTick = () => {
     if (!gameStateActive) return;
 
     // MOVEMENT
@@ -47,11 +48,11 @@ export default function Hero(props, ref) {
     }
   }
 
-  useTickInterval(onTick);
+  useTickInterval(onMoveTick, HERO_MOVE_MS);
 
   useEffect(() => {
     // TODO: Make hero's speed more consistent
-    onTick();
+    onMoveTick();
   }, [leftKeyDown, rightKeyDown, upKeyDown, downKeyDown]);
 
   useEffect(() => {
