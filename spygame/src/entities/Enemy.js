@@ -4,6 +4,7 @@ import {
   ENTITY_HABIT,
   ACTION_UPDATE_NPC_STATE,
   TICK_MS,
+  SUS_LEVEL
  } from '../CONSTANTS';
 import {
   distanceBetween,
@@ -22,6 +23,7 @@ import usePrevious from '../hooks/usePrevious';
 
 const NPC_MOVE_MS = 500;
 const NPC_SCAN_SPEED = .01;
+const NPC_COOLDOWN_MS = 30000;
 
 export default function Enemy(props) {
   const { npc, damageTaken, alive, boundaryCollision, sceneryCollision, entityCollision, susList } = props;
@@ -36,6 +38,7 @@ export default function Enemy(props) {
   const [ step, setStep ] = useState(0);
   const [ habit, setHabit ] = useState(ENTITY_HABIT.IDLE);
   const prevHabit = usePrevious(habit);
+  const [ susKnownAbout, setSusKnownAbout ] = useState([]);
 
   const [ aimChangeRate, setAimChangeRate ] = useState(0);
   const [ scanReps, setScanReps ] = useState(0);
@@ -70,6 +73,7 @@ export default function Enemy(props) {
   useTickInterval(onMoveTick, NPC_MOVE_MS);
 
   const onTick = () => {
+    if (!gameStateActive || !alive) return;
     // TODO: refactor this rat's nest
     let newAim;
     switch(habit) {
@@ -118,19 +122,28 @@ export default function Enemy(props) {
   const updateAim = newAim => {
     setAim(newAim);
     dispatch({ type: ACTION_UPDATE_NPC_STATE, payload: {id, aim: newAim}});
-    checkSusList();
+    checkSusInView();
   }
 
-  const checkSusList = () => {
-    const susInView = checkSus(npc, susList);
-    if (susInView.length > 0 && mood !== ENTITY_MOOD.COMBAT) {
-      setMood(ENTITY_MOOD.COMBAT);
-      dispatch({ type: ACTION_UPDATE_NPC_STATE, payload: {mood: ENTITY_MOOD.COMBAT}})
-    } else if (susInView.length === 0 && mood === ENTITY_MOOD.COMBAT) {
-      setMood(ENTITY_MOOD.OK);
-      dispatch({ type: ACTION_UPDATE_NPC_STATE, payload: {mood: ENTITY_MOOD.OK}})
-    }
+  const updateMood = newMood => {
+    console.log(`${id} is now ${newMood}`)
+    setMood(newMood);
+    dispatch({ type: ACTION_UPDATE_NPC_STATE, payload: {newMood}})
   }
+
+  const checkSusInView = () => {
+    const susInView = checkSus(npc, susList);
+    if (susInView.length > 0) {
+      // One or more sus things is in plain view. Sort them to prioritize higher threats.
+      const primeSus = susInView.sort((a, b) => a.susLevel > b.susLevel)[0];
+      const newMood = primeSus.susLevel === SUS_LEVEL.FOE ? ENTITY_MOOD.AGGRESSIVE : ENTITY_MOOD.ALERTED;
+      updateMood(newMood)
+    } else {
+      updateMood(ENTITY_MOOD.OK);
+    }
+
+  }
+
   const handleHit = () => {
     setFlash(true);
     setTimeout(() => {
@@ -150,7 +163,7 @@ export default function Enemy(props) {
   }, [pos])
 
   useEffect(() => {
-    checkSusList();
+    checkSusInView();
   }, [ susList, pos] )
 
   useEffect(() => {
@@ -169,8 +182,8 @@ export default function Enemy(props) {
     }}>
       <img src={enemySprite} alt='hero' width={GRID_SIZE} height={GRID_SIZE}></img>
       <div className='fov-cone' style={{left: `${GRID_SIZE/2}px`, top: `${4 - fovHeight/2}px`, width: `${fovWidth}px`, height: `${fovHeight}px`, display: `${alive ? 'block' : 'none'}`, transform: `rotate(${aim}rad)`, transformOrigin: 'center left'}}>
-        <div className='fov-boundary' style={{top: `${fovHeight/2}px`, width: `${fovWidth}px`, opacity: '.3', transform: `rotate(${-fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.ALERT ? '#AA0' : mood === ENTITY_MOOD.COMBAT ? '#F00' : '#0A0'}`}}></div>
-        <div className='fov-boundary' style={{top: `${fovHeight/2}px`, width: `${fovWidth}px`, opacity: '.3', transform: `rotate(${fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.ALERT ? '#AA0' : mood === ENTITY_MOOD.COMBAT ? '#F00' : '#0A0'}`}}></div>
+        <div className='fov-boundary' style={{top: `${fovHeight/2}px`, width: `${fovWidth}px`, opacity: '.3', transform: `rotate(${-fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.ALERTED ? '#AA0' : mood === ENTITY_MOOD.AGGRESSIVE ? '#F00' : '#0A0'}`}}></div>
+        <div className='fov-boundary' style={{top: `${fovHeight/2}px`, width: `${fovWidth}px`, opacity: '.3', transform: `rotate(${fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.ALERTED ? '#AA0' : mood === ENTITY_MOOD.AGGRESSIVE ? '#F00' : '#0A0'}`}}></div>
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ import {
   ACTION_UPDATE_NPC_STATE,
   ACTION_SET_SCENERY_BLOCKS,
   ACTION_OBJECTIVE_COMPLETED,
-  SUS_KINDS
+  SUS_LEVEL
 } from '../CONSTANTS';
 
 const initialGameState = {
@@ -28,7 +28,7 @@ const initialGameState = {
   susList: [
     {
       id: "hero",
-      susKind: SUS_KINDS.FOE,
+      susLevel: SUS_LEVEL.FOE,
       pos: {
         x: 0,
         y: 0

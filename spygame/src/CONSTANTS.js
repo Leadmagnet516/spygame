@@ -23,7 +23,7 @@ export const TICK_MS = 16;
 export const HERO_MOVE_MS = 125;
 export const ENTITY_MOOD = {
   OK: 'Ok',
-  ALERT: 'Alert',
+  ALERTED: 'Alerted',
   AGGRESSIVE: 'Aggressive'
 }
 export const ENTITY_HABIT = {
@@ -33,7 +33,7 @@ export const ENTITY_HABIT = {
   SEARCH: 'Search',
   COMBAT: 'Combat'
 }
-export const SUS_KINDS = {  // Rather than strings, these are ranked "threat level" integers
+export const SUS_LEVEL = {
   FOE: 1,
   ANOMALY: 2
 }

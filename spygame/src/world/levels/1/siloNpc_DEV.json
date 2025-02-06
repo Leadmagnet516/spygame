@@ -37,5 +37,44 @@
         "reps": 2
       }
     ]
+  },
+  {
+    "kind": "guard",
+    "hitPoints": 100,
+    "aim": 3.14,
+    "fov": {
+      "field": 1,
+      "range": 10
+    },
+    "patrol": [
+      {
+        "habit": "Move",
+        "baseAim": 0,
+        "pos": {
+          "x": 12,
+          "y": 12
+        }
+      },
+      {
+        "habit": "Scan",
+        "baseAim": 3.14,
+        "scan": 0.5,
+        "reps": 2
+      },
+      {
+        "habit": "Move",
+        "baseAim": 3.14,
+        "pos": {
+          "x": 6,
+          "y": 12
+        }
+      },
+      {
+        "habit": "Scan",
+        "baseAim": 0,
+        "scan": 0.5,
+        "reps": 2
+      }
+    ]
   }
 ]
