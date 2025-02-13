@@ -21,8 +21,10 @@ const initialGameState = {
     pos: {
       x: 0,
       y: 0,
-      hitPoints: 100
-    }
+    },
+    damageTaken: 0,
+    hitPoints: 100,
+    alive: true
   },
   npcStates: [],
   susList: [

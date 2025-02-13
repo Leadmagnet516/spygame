@@ -13,12 +13,13 @@ const FxLayer = (props, ref) => {
   const { boundaryCollision, sceneryCollision, entityCollision } = props;
   const [fx, setFx ] = useState([]);
 
-  const createBullet = (pos, aim) => {
+  const createBullet = (pos, aim, shooterId) => {
     setFx([...fx, {
         fxType: 'bull',
         id: `fx_${fx.length}${Math.random()}`,  // Dumb hack to make IDs more unique
         initPos: pos,
-        aim
+        aim,
+        shooterId
       }]
     );
   }
@@ -32,8 +33,8 @@ const FxLayer = (props, ref) => {
   // TODO: Move handlers outside useEffect
   useEffect(() => {
     const handleFireWeapon = e => {
-      const { pos, aim } = e.detail;
-      createBullet(pos, aim);
+      const { pos, aim, shooterId } = e.detail;
+      createBullet(pos, aim, shooterId);
     }
 
     const handleBulletCollision = e => {
@@ -62,7 +63,7 @@ const FxLayer = (props, ref) => {
       fx.map((fxi) => {
         if(fxi.fxType === 'bull') {
           return (
-            <Bullet initPos={fxi.initPos} aim={fxi.aim} id={fxi.id} key={fxi.id} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} entityCollision={entityCollision}></Bullet>
+            <Bullet initPos={fxi.initPos} aim={fxi.aim} id={fxi.id} shooterId={fxi.shooterId} key={fxi.id} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} entityCollision={entityCollision}></Bullet>
           )
         }
         return {};

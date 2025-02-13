@@ -8,7 +8,8 @@ export const GAME_STATE = {
   INACTIVE: 'InactiveState',
   ACTIVE: 'ActiveState',
   PAUSED: 'PausedState',
-  LEAVING: 'LeavingState'
+  LEAVING: 'LeavingState',
+  OVER: 'GameOverState'
 }
 
 // SCREEN
@@ -34,6 +35,7 @@ export const ENTITY_TASK = {
   COMBAT: 'Combat'
 }
 export const SUS_LEVEL = {
+  NORMAL: 0,
   ANOMALY: 1,
   FOE: 2
 }

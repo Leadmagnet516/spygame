@@ -17,16 +17,17 @@ import { selectGameStateActive } from '../SELECTORS';
 import { useDispatch,useSelector } from 'react-redux';
 
 export default function Hero(props, ref) {
-  const { initPos, boundaryCollision, sceneryCollision, npcCollision } = props;
+  const { initPos, damageTaken, alive, boundaryCollision, sceneryCollision, npcCollision } = props;
   const {xOffset, yOffset} = useContext(AppContext);
   const gameStateActive = useSelector(selectGameStateActive);
   const { leftKeyDown, rightKeyDown, upKeyDown, downKeyDown, spaceKeyDown } = useKeyboardControl();
   const { pos, updatePos } = useGridPosition('hero', initPos, [boundaryCollision, sceneryCollision, npcCollision]);
   const { aim, mouseDown } = useMouseAim(xOffset, yOffset, pos);
   const dispatch = useDispatch();
+  const [ flash, setFlash ] = useState(false);
 
   const onMoveTick = () => {
-    if (!gameStateActive) return;
+    if (!gameStateActive || !alive) return;
 
     // MOVEMENT
     let movement = {hor: 0, ver: 0};
@@ -50,19 +51,27 @@ export default function Hero(props, ref) {
 
   useTickInterval(onMoveTick, HERO_MOVE_MS);
 
+  const handleHit = () => {
+    setFlash(true);
+    setTimeout(() => {
+      setFlash(false);
+    }, 50);
+  }
+
   useEffect(() => {
+    if (!alive) return;
     // TODO: Make hero's speed more consistent
     onMoveTick();
   }, [leftKeyDown, rightKeyDown, upKeyDown, downKeyDown]);
 
   useEffect(() => {
-    if(mouseDown) {
-      dispatchEvent(new CustomEvent(EVENT_FIRE_WEAPON, {detail: {pos, aim}}))
+    if(mouseDown && alive) {
+      dispatchEvent(new CustomEvent(EVENT_FIRE_WEAPON, {detail: {pos, aim, shooterId: 'hero'}}))
     }
   }, [mouseDown]);
 
   useEffect(() => {
-    if(spaceKeyDown) {
+    if(spaceKeyDown && alive) {
       dispatchEvent(new CustomEvent(EVENT_HERO_INTERACT, { detail: {pos, aim}}))
     }
   }, [spaceKeyDown]);
@@ -71,10 +80,19 @@ export default function Hero(props, ref) {
     dispatch({ type: ACTION_UPDATE_HERO_STATE, payload: {pos}})
   }, [pos])
 
+  useEffect(() => {
+    if(!alive) {
+      return(() => {})
+    }
+    handleHit();
+  }, [damageTaken, alive])
+
   return (
     <div className='entity hero' style={{
       left: `${pos.x * GRID_SIZE}px`,
       top: `${pos.y * GRID_SIZE}px`,
+      filter: `brightness(${flash ? '1.5' : '1'})`,
+      transform: `${alive ? 'none' : 'rotate(90deg)'}`
     }}>
       <img src={spySprite} alt='hero' width={GRID_SIZE} height={GRID_SIZE}></img>
     </div>

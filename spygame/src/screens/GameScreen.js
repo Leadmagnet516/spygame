@@ -96,7 +96,7 @@ export default function GameScreen( props ) {
   const entityCollision = pos => {
     let collision = '';
     
-    if (pos === heroState.pos) {
+    if (pos.x === heroState.pos.x && pos.y === heroState.pos.y) {
       collision = 'hero';
     } else {
       collision = npcCollision(pos);
@@ -171,7 +171,7 @@ export default function GameScreen( props ) {
     <div className='game-screen' style={{width: `${GAME_WIDTH}px`, height: `${GAME_HEIGHT}px`, position: 'absolute'}}>
       <SceneryLayer ref={sceneryLayerRef} scenery={Scenery}></SceneryLayer>
       <NpcLayer ref={npcLayerRef} initNpcs={Npcs} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} entityCollision={entityCollision}></NpcLayer>
-      <Hero ref={heroRef} initPos={initHero.pos} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} npcCollision={npcCollision}></Hero>
+      <Hero ref={heroRef} initPos={initHero.pos} damageTaken={heroState.damageTaken} alive={heroState.alive} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} npcCollision={npcCollision}></Hero>
       <FxLayer ref={fxLayerRef} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} entityCollision={entityCollision}></FxLayer>
       <HudLayer ref={hudLayerRef}>
         <div style={{position: "absolute", width: `${GRID_SIZE}px`, height: `${GRID_SIZE}px`, left: `${Objective.objectiveMarker.x * GRID_SIZE +10}px`, top: `${Objective.objectiveMarker.y * GRID_SIZE}px`, color: "#F00", fontWeight: "bold", fontSize: "24px"}}>

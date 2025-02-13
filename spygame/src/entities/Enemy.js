@@ -4,7 +4,8 @@ import {
   ENTITY_TASK,
   ACTION_UPDATE_NPC_STATE,
   TICK_MS,
-  SUS_LEVEL
+  SUS_LEVEL,
+  EVENT_FIRE_WEAPON
  } from '../CONSTANTS';
 import {
   distanceBetween,
@@ -20,9 +21,10 @@ import { selectGameStateActive } from '../SELECTORS';
 import useSusDetection from '../hooks/useSusDetection';
 import useTickInterval from '../hooks/useTickInterval';
 
-const NPC_MOVE_MS = 500;
-const NPC_SCAN_SPEED = .01;
-const NPC_COOLDOWN_MS = 5000;
+const MOVE_MS = 500;
+const SCAN_SPEED = .01;
+const COOLDOWN_MS = 5000;
+const CHANCE_TO_FIRE_WEAPON = .01;
 
 export default function Enemy(props) {
   const { npc, damageTaken, alive, boundaryCollision, sceneryCollision, entityCollision, susList } = props;
@@ -44,6 +46,7 @@ export default function Enemy(props) {
   const [ timeTilCooldown, setTimeTilCooldown ] = useState(0);
   const [ destination, setDestination ] = useState({});
 
+  // PATROL STEP MANAGEMENT
   const goToNextStep = () => {
     const nextStep = step + 1 >= patrol.length ? 0 : step + 1
     setStep(nextStep);
@@ -65,6 +68,7 @@ export default function Enemy(props) {
     setAimChangeRate(shortestArcBetween(aim, baseAim)/30);
   }
 
+  // TICK-BASED STUFF
   const onMoveTick = () => {
     if (!gameStateActive ||
         !alive ||
@@ -83,30 +87,48 @@ export default function Enemy(props) {
     updatePos({hor, ver});
   }
 
-  useTickInterval(onMoveTick, NPC_MOVE_MS);
+  useTickInterval(onMoveTick, MOVE_MS);
+
+  const updateCooldown = () => {
+    const ttc = timeTilCooldown - TICK_MS;
+    setTimeTilCooldown(ttc);
+    if (ttc <= 0) {
+      forgetSus();
+      updateMood(ENTITY_MOOD.OK);
+      returnToPatrol();
+    }
+  }
+
+  const goTowardSus = sus => {
+    if(destination !== knownSus[0].pos) {
+      setHabit(ENTITY_TASK.MOVE);
+      setDestination(knownSus[0].pos);
+    }
+    updateAim(angleBetweenPos(pos, knownSus[0].pos));
+  }
 
   const onTick = () => {
     if (!gameStateActive || !alive) return;
     // TODO: refactor this rat's nest
 
+    let primeSus;
     switch(mood) {
       case ENTITY_MOOD.AGGRESSIVE :
-      case ENTITY_MOOD.ALERTED :
-        const ttc = timeTilCooldown - TICK_MS;
-        setTimeTilCooldown(ttc);
-        if (ttc <= 0) {
-          forgetSus();
-          updateMood(ENTITY_MOOD.OK);
-          returnToPatrol();
-          break;
-        }
+        updateCooldown();
+        primeSus = knownSus[0];
+        if (primeSus && primeSus.pos) {
+          goTowardSus(primeSus)
+         }
 
-        if (knownSus[0].pos) {
-          if(destination !== knownSus[0].pos) {
-            setHabit(ENTITY_TASK.MOVE);
-            setDestination(knownSus[0].pos);
-          }
-          updateAim(angleBetweenPos(pos, knownSus[0].pos));
+        if (Math.random() < CHANCE_TO_FIRE_WEAPON) {
+          dispatchEvent(new CustomEvent(EVENT_FIRE_WEAPON, {detail: {pos, aim, shooterId: id}}))
+        }
+        break;
+      case ENTITY_MOOD.ALERTED :
+        updateCooldown();
+        primeSus = knownSus[0];
+        if (primeSus && primeSus.pos) {
+         goTowardSus(primeSus)
         }
         
         break;
@@ -124,7 +146,7 @@ export default function Enemy(props) {
             }
             updateAim(newAim);
           } else {
-            if (Math.abs(aimChangeRate) !== NPC_SCAN_SPEED) setAimChangeRate(NPC_SCAN_SPEED);
+            if (Math.abs(aimChangeRate) !== SCAN_SPEED) setAimChangeRate(SCAN_SPEED);
             const { baseAim, scan, reps } = patrol[step];
             newAim = aim + aimChangeRate
             if (newAim >= baseAim + scan || newAim <= baseAim - scan) {
@@ -158,6 +180,7 @@ export default function Enemy(props) {
 
   useTickInterval(onTick, TICK_MS);
 
+  // UPDATERS
   const updateAim = newAim => {
     setAim(newAim);
     dispatch({ type: ACTION_UPDATE_NPC_STATE, payload: {id, aim: newAim}});
@@ -169,6 +192,7 @@ export default function Enemy(props) {
     dispatch({ type: ACTION_UPDATE_NPC_STATE, payload: {newMood}})
   }
 
+  // THREAT DETECTION
   const checkSusInView = () => {
     const susInView = checkSus(npc, susList);
 
@@ -178,18 +202,17 @@ export default function Enemy(props) {
       // If this is a newly-noticed sus and our alert level is too low, crank it up
       if (!alreadyKnown && mood < sus.susLevel) {
         updateMood(sus.susLevel);
-        setHabit(ENTITY_TASK.COMBAT);
       }
 
       // If this is a newly-noticed sus and/or a foe is still in view, reset the cooldown timer
       if (!alreadyKnown || sus.susLevel > SUS_LEVEL.ANOMALY) {
-        setTimeTilCooldown(NPC_COOLDOWN_MS);
+        setTimeTilCooldown(COOLDOWN_MS);
       }
     })
   }
 
   /**
-   * @param {Object} susViewed - The suspicious item currently within enemy's fov
+   * @param {Object} susViewed - A suspicious item currently within enemy's FOV
    * @returns {boolean} - Do we know about this one already?
    */
   const checkAndUpdateKnownSus = susViewed => {
