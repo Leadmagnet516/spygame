@@ -1,7 +1,7 @@
 import {
   GRID_SIZE,
   ENTITY_MOOD,
-  ENTITY_HABIT,
+  ENTITY_TASK,
   ACTION_UPDATE_NPC_STATE,
   TICK_MS,
   SUS_LEVEL
@@ -19,11 +19,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectGameStateActive } from '../SELECTORS';
 import useSusDetection from '../hooks/useSusDetection';
 import useTickInterval from '../hooks/useTickInterval';
-import usePrevious from '../hooks/usePrevious';
 
 const NPC_MOVE_MS = 500;
 const NPC_SCAN_SPEED = .01;
-const NPC_COOLDOWN_MS = 30000;
+const NPC_COOLDOWN_MS = 5000;
 
 export default function Enemy(props) {
   const { npc, damageTaken, alive, boundaryCollision, sceneryCollision, entityCollision, susList } = props;
@@ -36,36 +35,50 @@ export default function Enemy(props) {
   const dispatch = useDispatch();
   const { checkSus } = useSusDetection();
   const [ step, setStep ] = useState(0);
-  const [ habit, setHabit ] = useState(ENTITY_HABIT.IDLE);
-  const prevHabit = usePrevious(habit);
-  const [ susKnownAbout, setSusKnownAbout ] = useState([]);
+  const [ habit, setHabit ] = useState(ENTITY_TASK.IDLE);
+  const [ knownSus, setKnownSus ] = useState([]);
 
   const [ aimChangeRate, setAimChangeRate ] = useState(0);
   const [ scanReps, setScanReps ] = useState(0);
   const [ aimNext, setAimNext ] = useState(0);
+  const [ timeTilCooldown, setTimeTilCooldown ] = useState(0);
+  const [ destination, setDestination ] = useState({});
 
   const goToNextStep = () => {
     const nextStep = step + 1 >= patrol.length ? 0 : step + 1
     setStep(nextStep);
-    setHabit(patrol[nextStep].habit);
+    goToStep(nextStep);
+  }
 
-    const { baseAim } = patrol[nextStep];
+  const returnToPatrol = () => {
+    goToStep(step);
+  }
+
+  const goToStep = whichStep => {
+    const { habit, baseAim } = patrol[whichStep];
+    setHabit(habit);
+    if (habit === ENTITY_TASK.MOVE) {
+      setDestination(patrol[whichStep].pos);
+    }
+
     setAimNext(baseAim);
     setAimChangeRate(shortestArcBetween(aim, baseAim)/30);
   }
 
   const onMoveTick = () => {
-    if (!gameStateActive || !alive || habit !== ENTITY_HABIT.MOVE) return;
+    if (!gameStateActive ||
+        !alive ||
+        (habit !== ENTITY_TASK.MOVE && habit !== ENTITY_TASK.COMBAT && habit !== ENTITY_TASK.SEARCH)) return;
 
-    const distToPatrolPoint = distanceBetween(pos, patrol[step].pos);
-    if (distToPatrolPoint <= 0) {
-      goToNextStep();
+    const distToDest = distanceBetween(pos, destination);
+    if (distToDest <= 0) {
+      if (mood === ENTITY_MOOD.OK) goToNextStep();
       return;
     }
-    const xToPatrolPoint = patrol[step].pos.x - pos.x;
-    const yToPatrolPoint = patrol[step].pos.y - pos.y
-    const hor = Math.round(xToPatrolPoint/distToPatrolPoint);
-    const ver = Math.round(yToPatrolPoint/distToPatrolPoint);
+    const xToPatrolPoint = destination.x - pos.x;
+    const yToPatrolPoint = destination.y - pos.y;
+    const hor = Math.round(xToPatrolPoint/distToDest);
+    const ver = Math.round(yToPatrolPoint/distToDest);
 
     updatePos({hor, ver});
   }
@@ -75,45 +88,71 @@ export default function Enemy(props) {
   const onTick = () => {
     if (!gameStateActive || !alive) return;
     // TODO: refactor this rat's nest
-    let newAim;
-    switch(habit) {
-      case ENTITY_HABIT.SCAN :
-        const {baseAim, scan} = patrol[step];
-        if(!angleIsWithinArc(aim, baseAim - scan, baseAim + scan)) {
-          newAim = aim + aimChangeRate;
-          if (Math.abs(shortestArcBetween(newAim, aimNext)) < Math.abs(aimChangeRate)) {
-            newAim = aimNext;
-            setAimChangeRate(0);
-          }
-          updateAim(newAim);
-        } else {
-          if (Math.abs(aimChangeRate) !== NPC_SCAN_SPEED) setAimChangeRate(NPC_SCAN_SPEED);
-          const { baseAim, scan, reps } = patrol[step];
-          newAim = aim + aimChangeRate
-          if (newAim >= baseAim + scan || newAim <= baseAim - scan) {
-            const scanRepsCompleted = scanReps + .5;
-            setScanReps(scanRepsCompleted);
-            if (scanRepsCompleted >= reps) {
-              setAimChangeRate(0);
-              setScanReps(0);
-              goToNextStep()
-            } else {
-              setAimChangeRate(-aimChangeRate);
-            }
-          }
-          updateAim(newAim);
+
+    switch(mood) {
+      case ENTITY_MOOD.AGGRESSIVE :
+      case ENTITY_MOOD.ALERTED :
+        const ttc = timeTilCooldown - TICK_MS;
+        setTimeTilCooldown(ttc);
+        if (ttc <= 0) {
+          forgetSus();
+          updateMood(ENTITY_MOOD.OK);
+          returnToPatrol();
+          break;
         }
+
+        if (knownSus[0].pos) {
+          if(destination !== knownSus[0].pos) {
+            setHabit(ENTITY_TASK.MOVE);
+            setDestination(knownSus[0].pos);
+          }
+          updateAim(angleBetweenPos(pos, knownSus[0].pos));
+        }
+        
         break;
+      case ENTITY_MOOD.OK :
       default :
-        if (aim !== aimNext) {
-          newAim = aim + aimChangeRate;
-          if (Math.abs(shortestArcBetween(newAim, aimNext)) < Math.abs(aimChangeRate)) {
-            newAim = aimNext;
-            setAimChangeRate(0);
+      let newAim;
+      switch(habit) {
+        case ENTITY_TASK.SCAN :
+          const {baseAim, scan} = patrol[step];
+          if(!angleIsWithinArc(aim, baseAim - scan, baseAim + scan)) {
+            newAim = aim + aimChangeRate;
+            if (Math.abs(shortestArcBetween(newAim, aimNext)) < Math.abs(aimChangeRate)) {
+              newAim = aimNext;
+              setAimChangeRate(0);
+            }
+            updateAim(newAim);
+          } else {
+            if (Math.abs(aimChangeRate) !== NPC_SCAN_SPEED) setAimChangeRate(NPC_SCAN_SPEED);
+            const { baseAim, scan, reps } = patrol[step];
+            newAim = aim + aimChangeRate
+            if (newAim >= baseAim + scan || newAim <= baseAim - scan) {
+              const scanRepsCompleted = scanReps + .5;
+              setScanReps(scanRepsCompleted);
+              if (scanRepsCompleted >= reps) {
+                setAimChangeRate(0);
+                setScanReps(0);
+                goToNextStep()
+              } else {
+                setAimChangeRate(-aimChangeRate);
+              }
+            }
+            updateAim(newAim);
           }
-          updateAim(newAim);
-        }
-        break;
+          break;
+        default :
+          if (aim !== aimNext) {
+            newAim = aim + aimChangeRate;
+            if (Math.abs(shortestArcBetween(newAim, aimNext)) < Math.abs(aimChangeRate)) {
+              newAim = aimNext;
+              setAimChangeRate(0);
+            }
+            updateAim(newAim);
+          }
+          break;
+      }
+      break;
     }
   }
 
@@ -126,22 +165,63 @@ export default function Enemy(props) {
   }
 
   const updateMood = newMood => {
-    console.log(`${id} is now ${newMood}`)
     setMood(newMood);
     dispatch({ type: ACTION_UPDATE_NPC_STATE, payload: {newMood}})
   }
 
   const checkSusInView = () => {
     const susInView = checkSus(npc, susList);
-    if (susInView.length > 0) {
-      // One or more sus things is in plain view. Sort them to prioritize higher threats.
-      const primeSus = susInView.sort((a, b) => a.susLevel > b.susLevel)[0];
-      const newMood = primeSus.susLevel === SUS_LEVEL.FOE ? ENTITY_MOOD.AGGRESSIVE : ENTITY_MOOD.ALERTED;
-      updateMood(newMood)
-    } else {
-      updateMood(ENTITY_MOOD.OK);
+
+    susInView.forEach(sus => {
+      const alreadyKnown = checkAndUpdateKnownSus(sus);
+
+      // If this is a newly-noticed sus and our alert level is too low, crank it up
+      if (!alreadyKnown && mood < sus.susLevel) {
+        updateMood(sus.susLevel);
+        setHabit(ENTITY_TASK.COMBAT);
+      }
+
+      // If this is a newly-noticed sus and/or a foe is still in view, reset the cooldown timer
+      if (!alreadyKnown || sus.susLevel > SUS_LEVEL.ANOMALY) {
+        setTimeTilCooldown(NPC_COOLDOWN_MS);
+      }
+    })
+  }
+
+  /**
+   * @param {Object} susViewed - The suspicious item currently within enemy's fov
+   * @returns {boolean} - Do we know about this one already?
+   */
+  const checkAndUpdateKnownSus = susViewed => {
+    const ind = knownSus.findIndex(sus => sus.id === susViewed.id);
+
+    if ( ind === -1) {
+      // This is a new one. Add it to the knownSus list and alert caller that it wasn't there already
+      setKnownSus(knownSus => [
+        ...knownSus,
+        {
+          id: susViewed.id,
+          pos: susViewed.pos,
+          susLevel: susViewed.susLevel,
+          ignoreAfterCooldown: susViewed.susLevel === SUS_LEVEL.ANOMALY // No need to get set off EVERY time you find the same dead body
+        }
+      ].sort((a, b) => a.susLevel > b.susLevel));
+
+      return false;
     }
 
+    setKnownSus(knownSus => knownSus.map((sus, idx) => {
+      return idx === ind ? {
+        ...sus,
+        pos: susViewed.pos
+      } : sus;
+    }));
+
+    return true;
+  }
+
+  const forgetSus = () => {
+    setKnownSus(knownSus => knownSus.filter(sus => sus.ignoreAfterCooldown));
   }
 
   const handleHit = () => {

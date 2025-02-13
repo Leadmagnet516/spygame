@@ -22,11 +22,11 @@ export const GAME_HEIGHT = GRID_SIZE * GRID_HEIGHT;
 export const TICK_MS = 16;
 export const HERO_MOVE_MS = 125;
 export const ENTITY_MOOD = {
-  OK: 'Ok',
-  ALERTED: 'Alerted',
-  AGGRESSIVE: 'Aggressive'
+  OK: 0,
+  ALERTED: 1,
+  AGGRESSIVE: 2
 }
-export const ENTITY_HABIT = {
+export const ENTITY_TASK = {
   IDLE: "Idle",
   MOVE: 'Move',
   SCAN: 'Scan',
@@ -34,8 +34,8 @@ export const ENTITY_HABIT = {
   COMBAT: 'Combat'
 }
 export const SUS_LEVEL = {
-  FOE: 1,
-  ANOMALY: 2
+  ANOMALY: 1,
+  FOE: 2
 }
 
 // GAME EVENTS

@@ -13,7 +13,7 @@ export default function SceneryLayer(props) {
 
   useEffect(() => {
     dispatch({ type: ACTION_SET_SCENERY_BLOCKS, payload: scenery});
-  })
+  }, [])
   
   return (
     <div className='scenery_layer' style={{

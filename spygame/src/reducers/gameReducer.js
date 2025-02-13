@@ -39,6 +39,7 @@ const initialGameState = {
 
 const damagedEntity = (entity, damage) => {
   if (entity.damageTaken + damage >= entity.hitPoints) {
+
     return {
       ...entity,
       damageTaken: entity.damageTaken + damage,
@@ -85,13 +86,20 @@ export default function gameReducer(state = initialGameState, action) {
       if (action.payload.victimId === "hero") {
         return { ...state, heroState: damagedEntity(state.heroState, action.payload.damage)}
       } else {
-        return { ...state, npcStates: state.npcStates.map(npc => {
+        const susListAdditions = [];
+        const newNpcStates = state.npcStates.map(npc => {
           if(npc.id === action.payload.victimId) {
-            return damagedEntity(npc, action.payload.damage);
+            const damagedNpc = damagedEntity(npc, action.payload.damage);
+            if (!damagedNpc.alive) susListAdditions.push({
+              ...damagedNpc,
+              susLevel: SUS_LEVEL.ANOMALY
+            });
+            return damagedNpc;
           } else {
             return npc;
           }
-        })}
+        })
+        return { ...state, npcStates: newNpcStates, susList: [...state.susList, ...susListAdditions] }
       }
 
     case ACTION_UPDATE_NPC_STATE :

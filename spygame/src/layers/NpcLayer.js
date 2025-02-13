@@ -36,9 +36,9 @@ export default function NpcLayer(props, ref)  {
     }}>
       {
         npcStates.map((npc, idx) => {
-          return (
+          return npc.kind !== 'ghost' ? (
             <Enemy key={npc.id} npc={npc} damageTaken={npc.damageTaken} alive={npc.alive} mood={npc.mood} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} entityCollision={entityCollision} susList={susList}></Enemy>
-          )
+          ) : null
         })
       }
     </div>

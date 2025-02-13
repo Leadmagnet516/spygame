@@ -39,8 +39,12 @@ export const radToDeg = rad => {
 export const angleBetweenPos = (pos1, pos2) => {
   const ox = pos2.x - pos1.x;
   const oy = pos2.y - pos1.y;
-  let angle = Math.atan(oy/ox);
 
+  if (ox === 0) return Math.sign(oy) * Math.PI/2;
+  if (oy === 0) return ox > 0 ? 0 : Math.PI;
+
+  let angle = Math.atan(oy/ox);
+  
   if (ox < 0) {
     if (oy < 0) {
       angle -= Math.PI;
