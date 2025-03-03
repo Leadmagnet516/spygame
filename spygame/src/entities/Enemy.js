@@ -27,7 +27,7 @@ import guard_p1 from '../images/guard_1.png';
 import guard_p2 from '../images/guard_2.png';
 import guard_dead from '../images/guard_dead.png';
 
-const MOVE_MS = 500;
+const TICKS_PER_MOVE = 50;
 const SCAN_SPEED = .01;
 const COOLDOWN_MS = 10000;
 const CHANCE_TO_FIRE_WEAPON = .01;
@@ -94,8 +94,6 @@ export default function Enemy(props) {
     updatePos({hor, ver}, true);
   }
 
-  useTickInterval(onMoveTick, MOVE_MS);
-
   const updateCooldown = () => {
     const ttc = timeTilCooldown - TICK_MS;
     setTimeTilCooldown(ttc);
@@ -114,7 +112,7 @@ export default function Enemy(props) {
     updateAim(angleBetweenPos(pos, knownSus[0].pos));
   }
 
-  const onTick = () => {
+  const onTick = ticksElapsed => {
     if (!gameStateActive || !alive) return;
     // TODO: refactor this rat's nest
 
@@ -173,7 +171,6 @@ export default function Enemy(props) {
         default :
           if (aim !== aimNext) {
             newAim = aim + aimChangeRate;
-            //console.log(aim, aimNext, aimChangeRate);
             if (Math.abs(shortestArcBetween(newAim, aimNext)) < Math.abs(aimChangeRate)) {
               newAim = aimNext;
               setAimChangeRate(0);
@@ -184,6 +181,8 @@ export default function Enemy(props) {
       }
       break;
     }
+
+    if (ticksElapsed % TICKS_PER_MOVE === 0) onMoveTick();
   }
 
   useTickInterval(onTick, TICK_MS);
