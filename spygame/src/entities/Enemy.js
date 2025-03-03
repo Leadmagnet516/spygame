@@ -14,16 +14,22 @@ import {
   angleIsWithinArc
 } from '../METHODS';
 import { useEffect, useState } from 'react';
-import enemySprite from '../images/enemy.png'
 import useGridPosition from '../hooks/useGridPosition';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectGameStateActive } from '../SELECTORS';
 import useSusDetection from '../hooks/useSusDetection';
 import useTickInterval from '../hooks/useTickInterval';
 
+import guard_n2 from '../images/guard_-2.png';
+import guard_n1 from '../images/guard_-1.png';
+import guard_0 from '../images/guard_0.png';
+import guard_p1 from '../images/guard_1.png';
+import guard_p2 from '../images/guard_2.png';
+import guard_dead from '../images/guard_dead.png';
+
 const MOVE_MS = 500;
 const SCAN_SPEED = .01;
-const COOLDOWN_MS = 5000;
+const COOLDOWN_MS = 10000;
 const CHANCE_TO_FIRE_WEAPON = .01;
 
 export default function Enemy(props) {
@@ -45,6 +51,7 @@ export default function Enemy(props) {
   const [ aimNext, setAimNext ] = useState(0);
   const [ timeTilCooldown, setTimeTilCooldown ] = useState(0);
   const [ destination, setDestination ] = useState({});
+  const [ showSprite, setShowSprite ] = useState(0);
 
   // PATROL STEP MANAGEMENT
   const goToNextStep = () => {
@@ -81,10 +88,10 @@ export default function Enemy(props) {
     }
     const xToPatrolPoint = destination.x - pos.x;
     const yToPatrolPoint = destination.y - pos.y;
-    const hor = Math.round(xToPatrolPoint/distToDest);
-    const ver = Math.round(yToPatrolPoint/distToDest);
+    const hor = xToPatrolPoint/distToDest;
+    const ver = yToPatrolPoint/distToDest;
 
-    updatePos({hor, ver});
+    updatePos({hor, ver}, true);
   }
 
   useTickInterval(onMoveTick, MOVE_MS);
@@ -166,6 +173,7 @@ export default function Enemy(props) {
         default :
           if (aim !== aimNext) {
             newAim = aim + aimChangeRate;
+            //console.log(aim, aimNext, aimChangeRate);
             if (Math.abs(shortestArcBetween(newAim, aimNext)) < Math.abs(aimChangeRate)) {
               newAim = aimNext;
               setAimChangeRate(0);
@@ -183,6 +191,8 @@ export default function Enemy(props) {
   // UPDATERS
   const updateAim = newAim => {
     setAim(newAim);
+    const sprite = Math.round(aim * (4 / Math.PI));
+    setShowSprite(sprite);
     dispatch({ type: ACTION_UPDATE_NPC_STATE, payload: {id, aim: newAim}});
     checkSusInView();
   }
@@ -280,10 +290,19 @@ export default function Enemy(props) {
       position: 'absolute',
       left: `${pos.x * GRID_SIZE}px`,
       top: `${pos.y * GRID_SIZE}px`,
-      filter: `brightness(${flash ? '1.5' : '1'}) hue-rotate(${npc.kind === 'technician' ? '90deg' : '0deg'})`,
-      transform: `${alive ? 'none' : 'rotate(90deg)'}`
+      filter: `brightness(${flash ? '1.5' : '1'}) hue-rotate(${npc.kind === 'technician' ? '90deg' : '0deg'})`
     }}>
-      <img src={enemySprite} alt='hero' width={GRID_SIZE} height={GRID_SIZE}></img>
+      <div style={{display: alive ? 'block' : 'none'}}>
+        <img src={guard_0} alt='guard' width={64} height={48} style={{display: showSprite === -4 || showSprite === 4 ? 'block' : 'none', transform: 'scaleX(-1) translateX(6px)'}}></img>
+        <img src={guard_n1} alt='guard' width={64} height={48} style={{display: showSprite === -3 || showSprite === 5 ? 'block' : 'none', transform: 'scaleX(-1) translateX(6px)'}}></img>
+        <img src={guard_n2} alt='guard' width={64} height={48} style={{display: showSprite === -2 ? 'block' : 'none'}}></img>
+        <img src={guard_n1} alt='guard' width={64} height={48} style={{display: showSprite === -1 ? 'block' : 'none'}}></img>
+        <img src={guard_0} alt='guard' width={64} height={48} style={{display: showSprite === 0 ? 'block' : 'none'}}></img>
+        <img src={guard_p1} alt='guard' width={64} height={48} style={{display: showSprite === 1 ? 'block' : 'none'}}></img>
+        <img src={guard_p2} alt='guard' width={64} height={48} style={{display: showSprite === 2 ? 'block' : 'none'}}></img>
+        <img src={guard_p1} alt='guard' width={64} height={48} style={{display: showSprite === 3 || showSprite === -5 ? 'block' : 'none', transform: 'scaleX(-1) translateX(6px)'}}></img>
+      </div>
+      <img src={guard_dead} alt='guard' width={64} height={48} style={{display: alive ? 'none' : 'block'}}></img>
       <div className='fov-cone' style={{left: `${GRID_SIZE/2}px`, top: `${4 - fovHeight/2}px`, width: `${fovWidth}px`, height: `${fovHeight}px`, display: `${alive ? 'block' : 'none'}`, transform: `rotate(${aim}rad)`, transformOrigin: 'center left'}}>
         <div className='fov-boundary' style={{top: `${fovHeight/2}px`, width: `${fovWidth}px`, opacity: '.3', transform: `rotate(${-fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.ALERTED ? '#AA0' : mood === ENTITY_MOOD.AGGRESSIVE ? '#F00' : '#0A0'}`}}></div>
         <div className='fov-boundary' style={{top: `${fovHeight/2}px`, width: `${fovWidth}px`, opacity: '.3', transform: `rotate(${fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.ALERTED ? '#AA0' : mood === ENTITY_MOOD.AGGRESSIVE ? '#F00' : '#0A0'}`}}></div>

@@ -6,7 +6,6 @@ import {
   ACTION_UPDATE_HERO_STATE,
   HERO_MOVE_MS
 } from '../CONSTANTS';
-import spySprite from '../images/spy.png'
 import { AppContext } from '../App';
 import useKeyboardControl from '../hooks/useKeyboardControls';
 import useMouseAim from '../hooks/useMouseAim';
@@ -15,6 +14,12 @@ import useGridPosition from '../hooks/useGridPosition';
 import { useState } from 'react';
 import { selectGameStateActive } from '../SELECTORS';
 import { useDispatch,useSelector } from 'react-redux';
+
+import spy_n2 from '../images/spy_-2.png';
+import spy_n1 from '../images/spy_-1.png';
+import spy_0 from '../images/spy_0.png';
+import spy_p1 from '../images/spy_1.png';
+import spy_p2 from '../images/spy_2.png';
 
 export default function Hero(props, ref) {
   const { initPos, damageTaken, alive, boundaryCollision, sceneryCollision, npcCollision } = props;
@@ -25,6 +30,7 @@ export default function Hero(props, ref) {
   const { aim, mouseDown } = useMouseAim(xOffset, yOffset, pos);
   const dispatch = useDispatch();
   const [ flash, setFlash ] = useState(false);
+  const [ showSprite, setShowSprite ] = useState(0);
 
   const onMoveTick = () => {
     if (!gameStateActive || !alive) return;
@@ -65,7 +71,7 @@ export default function Hero(props, ref) {
   }, [leftKeyDown, rightKeyDown, upKeyDown, downKeyDown]);
 
   useEffect(() => {
-    if(mouseDown && alive) {
+    if(gameStateActive && mouseDown && alive) {
       dispatchEvent(new CustomEvent(EVENT_FIRE_WEAPON, {detail: {pos, aim, shooterId: 'hero'}}))
     }
   }, [mouseDown]);
@@ -87,6 +93,10 @@ export default function Hero(props, ref) {
     handleHit();
   }, [damageTaken, alive])
 
+  useEffect(() => {
+    setShowSprite(Math.round(aim * (4 / Math.PI)));
+  }, [aim])
+
   return (
     <div className='entity hero' style={{
       left: `${pos.x * GRID_SIZE}px`,
@@ -94,7 +104,15 @@ export default function Hero(props, ref) {
       filter: `brightness(${flash ? '1.5' : '1'})`,
       transform: `${alive ? 'none' : 'rotate(90deg)'}`
     }}>
-      <img src={spySprite} alt='hero' width={GRID_SIZE} height={GRID_SIZE}></img>
+      <img src={spy_0} alt='hero' width={64} height={48} style={{display: showSprite === -4 ? 'block' : 'none', transform: 'scaleX(-1) translateX(16px)'}}></img>
+      <img src={spy_n1} alt='hero' width={64} height={48} style={{display: showSprite === -3 ? 'block' : 'none', transform: 'scaleX(-1) translateX(16px)'}}></img>
+      <img src={spy_n2} alt='hero' width={64} height={48} style={{display: showSprite === -2 ? 'block' : 'none'}}></img>
+      <img src={spy_n1} alt='hero' width={64} height={48} style={{display: showSprite === -1 ? 'block' : 'none'}}></img>
+      <img src={spy_0} alt='hero' width={64} height={48} style={{display: showSprite === 0 ? 'block' : 'none'}}></img>
+      <img src={spy_p1} alt='hero' width={64} height={48} style={{display: showSprite === 1 ? 'block' : 'none'}}></img>
+      <img src={spy_p2} alt='hero' width={64} height={48} style={{display: showSprite === 2 ? 'block' : 'none'}}></img>
+      <img src={spy_p1} alt='hero' width={64} height={48} style={{display: showSprite === 3 ? 'block' : 'none', transform: 'scaleX(-1) translateX(16px)'}}></img>
+      <img src={spy_0} alt='hero' width={64} height={48} style={{display: showSprite === 4 ? 'block' : 'none', transform: 'scaleX(-1) translateX(16px)'}}></img>
     </div>
   );
 }

@@ -57,16 +57,26 @@ export const angleBetweenPos = (pos1, pos2) => {
 }
 
 export const shortestArcBetween = (angle1, angle2) => {
+  // TODO: There's probably a cleaner way to do all this
   let norm1 = normalizeToZero(angle1);
   let norm2 = normalizeToZero(angle2);
 
-  return norm2 - norm1;
+  let shortestArc = norm2 - norm1;
+
+  if(shortestArc > Math.PI) {
+    shortestArc -= 2 * Math.PI;
+  }
+  if(shortestArc < -Math.PI) {
+    shortestArc += 2 * Math.PI;
+  }
+
+  return shortestArc;
 }
 
 export const normalizeToZero = angle => {
   let norm = angle;
   while (norm < 0) norm += 2 * Math.PI;
-  return norm % Math.PI;
+  return norm % (2 * Math.PI);
 }
 
 export const normalizeToAngle = (angle1, angle2) => {
