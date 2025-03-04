@@ -50,6 +50,7 @@ export const EVENT_HERO_INTERACT = 'HeroInteract';
 
 // REDUX ACTIONS
 export const ACTION_CHANGE_GAME_STATE = 'game/changeState';
+export const ACTION_RESET_GAME_INSTANCE = 'game/resetGameInstance';
 export const ACTION_UPDATE_HERO_STATE = 'game/changeHeroState';
 export const ACTION_UPDATE_NPC_STATE = 'game/changeNpcState';
 export const ACTION_RECORD_ENTITY_DAMAGE = 'game/recordEntityDamage';

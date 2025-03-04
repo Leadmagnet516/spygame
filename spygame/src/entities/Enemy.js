@@ -16,7 +16,7 @@ import {
 import { useEffect, useState } from 'react';
 import useGridPosition from '../hooks/useGridPosition';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectGameStateActive } from '../SELECTORS';
+import { selectGameStateActive, selectgameInstance } from '../SELECTORS';
 import useSusDetection from '../hooks/useSusDetection';
 import useTickInterval from '../hooks/useTickInterval';
 
@@ -40,6 +40,7 @@ export default function Enemy(props) {
   const [ flash, setFlash ] = useState(false);
   const [ aim, setAim ] = useState(3.14);
   const gameStateActive = useSelector(selectGameStateActive);
+  const gameInstance = useSelector(selectgameInstance);
   const dispatch = useDispatch();
   const { checkSus } = useSusDetection();
   const [ step, setStep ] = useState(0);
@@ -52,6 +53,19 @@ export default function Enemy(props) {
   const [ timeTilCooldown, setTimeTilCooldown ] = useState(0);
   const [ destination, setDestination ] = useState({});
   const [ showSprite, setShowSprite ] = useState(0);
+
+  useEffect(() => {
+    setMood(ENTITY_MOOD.OK);
+    setScanReps(0);
+    setHabit(ENTITY_TASK.IDLE);
+    setKnownSus([]);
+    setStep(0);
+    setTimeTilCooldown(0);
+    setDestination({});
+    setAimNext(0);
+    setAimChangeRate(0);
+    setFlash(false);
+  }, [gameInstance]);
 
   // PATROL STEP MANAGEMENT
   const goToNextStep = () => {
@@ -303,8 +317,8 @@ export default function Enemy(props) {
       </div>
       <img src={guard_dead} alt='guard' width={64} height={48} style={{display: alive ? 'none' : 'block'}}></img>
       <div className='fov-cone' style={{left: `${GRID_SIZE/2}px`, top: `${4 - fovHeight/2}px`, width: `${fovWidth}px`, height: `${fovHeight}px`, display: `${alive ? 'block' : 'none'}`, transform: `rotate(${aim}rad)`, transformOrigin: 'center left'}}>
-        <div className='fov-boundary' style={{top: `${fovHeight/2}px`, width: `${fovWidth}px`, opacity: '.3', transform: `rotate(${-fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.ALERTED ? '#AA0' : mood === ENTITY_MOOD.AGGRESSIVE ? '#F00' : '#0A0'}`}}></div>
-        <div className='fov-boundary' style={{top: `${fovHeight/2}px`, width: `${fovWidth}px`, opacity: '.3', transform: `rotate(${fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.ALERTED ? '#AA0' : mood === ENTITY_MOOD.AGGRESSIVE ? '#F00' : '#0A0'}`}}></div>
+        <div className='fov-boundary' style={{top: `${fovHeight/2}px`, transform: `rotate(${-fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.ALERTED ? '#AA0' : mood === ENTITY_MOOD.AGGRESSIVE ? '#F00' : '#FFF'}`}}></div>
+        <div className='fov-boundary' style={{top: `${fovHeight/2}px`, transform: `rotate(${fov.field / 2}rad)`, backgroundColor: `${mood ===  ENTITY_MOOD.ALERTED ? '#AA0' : mood === ENTITY_MOOD.AGGRESSIVE ? '#F00' : '#FFF'}`}}></div>
       </div>
     </div>
   );

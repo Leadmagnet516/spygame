@@ -104,7 +104,9 @@ body {
 }
 
 .fov-boundary {
-  height: 2px;
+  height: 1px;
+  width: 96px;
+  opacity: 0.5;
   position: absolute;
   left: 0;
   background-color: #000;

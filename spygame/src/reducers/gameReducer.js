@@ -1,6 +1,7 @@
 import {
   GAME_STATE,
   ACTION_CHANGE_GAME_STATE,
+  ACTION_RESET_GAME_INSTANCE,
   ACTION_UPDATE_HERO_STATE,
   ACTION_SET_NPCS,
   ACTION_RECORD_ENTITY_DAMAGE,
@@ -13,6 +14,7 @@ import {
 const initialGameState = {
   gameState: GAME_STATE.INACTIVE,
   prevGameState: null,
+  gameInstance: 0,
   objectiveCompleted: false,
   hudInstructions: '',
   hudMarkers: [],
@@ -60,6 +62,9 @@ export default function gameReducer(state = initialGameState, action) {
     case ACTION_CHANGE_GAME_STATE:
       const prevGameState = state.gameState;
       return { ...state, prevGameState, gameState: action.payload }
+    
+    case ACTION_RESET_GAME_INSTANCE:
+      return { ...initialGameState, hudMarkers: state.hudMarkers, sceneryBlocks: state.sceneryBlocks, gameInstance: state.gameInstance + 1 }
 
     case ACTION_UPDATE_HERO_STATE :
       const updateSusList = state.susList.map(sus => {

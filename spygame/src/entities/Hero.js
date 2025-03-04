@@ -94,7 +94,9 @@ export default function Hero(props, ref) {
   }, [damageTaken, alive])
 
   useEffect(() => {
-    setShowSprite(Math.round(aim * (4 / Math.PI)));
+    if(gameStateActive) {
+      setShowSprite(Math.round(aim * (4 / Math.PI)));
+    }
   }, [aim])
 
   return (

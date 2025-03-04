@@ -15,6 +15,7 @@ import {
   EVENT_OPEN_MODAL,
   EVENT_CLOSE_MODAL,
   EVENT_HERO_INTERACT,
+  ACTION_RESET_GAME_INSTANCE,
 } from '../CONSTANTS';
 import {
   posIsInArea
@@ -25,6 +26,10 @@ import Npcs from '../world/levels/1/siloNpc_DEV.json';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectPrevGameState, selectGameStateActive, selectHeroState, selectNpcStates, selectSceneryBlocks, selectObjectiveCompleted } from '../SELECTORS';
+
+import marksTheSpot from '../images/marks_the_spot.png';
+import c4 from '../images/c4.png';
+import arrow from '../images/arrow.png';
 
 const REF_HERO = 'Hero';
 const REF_CHARACTERS = 'Characters';
@@ -151,7 +156,7 @@ export default function GameScreen( props ) {
   }, [heroState, objectiveCompleted])
 
   const resetGame = () => {
-    dispatch({ type: ACTION_OBJECTIVE_COMPLETED, payload: false });
+    dispatch({ type: ACTION_RESET_GAME_INSTANCE, payload: false });
   }
 
   // LISTENERS
@@ -174,11 +179,11 @@ export default function GameScreen( props ) {
       <Hero ref={heroRef} initPos={initHero.pos} damageTaken={heroState.damageTaken} alive={heroState.alive} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} npcCollision={npcCollision}></Hero>
       <FxLayer ref={fxLayerRef} boundaryCollision={boundaryCollision} sceneryCollision={sceneryCollision} entityCollision={entityCollision}></FxLayer>
       <HudLayer ref={hudLayerRef}>
-        <div style={{position: "absolute", width: `${GRID_SIZE}px`, height: `${GRID_SIZE}px`, left: `${Objective.objectiveMarker.x * GRID_SIZE +10}px`, top: `${Objective.objectiveMarker.y * GRID_SIZE}px`, color: "#F00", fontWeight: "bold", fontSize: "24px"}}>
-          { !objectiveCompleted ? Objective.objectiveMarker.marker : ''}
+        <div style={{position: "absolute", width: `${GRID_SIZE}px`, height: `${GRID_SIZE}px`, left: `${Objective.objectiveMarker.x * GRID_SIZE}px`, top: `${Objective.objectiveMarker.y * GRID_SIZE}px`, color: "#F00", fontWeight: "bold", fontSize: "24px"}}>
+          <img src={objectiveCompleted ? c4 : marksTheSpot} alt="Objective Marker" width={48} height={48} />
         </div>
         <div style={{position: "absolute", width: `${GRID_SIZE}px`, height: `${GRID_SIZE}px`, left: `${Exits[0].pos.x * GRID_SIZE + 10}px`, top: `${Exits[0].pos.y * GRID_SIZE}px`, color: "#fff", fontWeight: "bold", fontSize: "24px"}}>
-          { objectiveCompleted ? '←' : ''}
+          <img src={arrow} style={{display: objectiveCompleted ? 'block' : 'none'}} alt="Objective Arrow" width={48} height={48} />
         </div>
         <div className="description top left">
           {description}

@@ -4,18 +4,19 @@ import {
   ENTITY_MOOD,
   ACTION_SET_NPCS
  } from '../CONSTANTS';
-import { selectNpcStates, selectSusList } from '../SELECTORS';
+import { selectgameInstance, selectNpcStates, selectSusList } from '../SELECTORS';
 import Enemy from '../entities/Enemy';
 import { useEffect  } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function NpcLayer(props, ref)  {
-  const { initNpcs, boundaryCollision, sceneryCollision, entityCollision } = props;
+  const { initNpcs, boundaryCollision, sceneryCollision, entityCollision, resetHash } = props;
+  const gameInstance = useSelector(selectgameInstance);
   const npcStates = useSelector(selectNpcStates);
   const susList = useSelector(selectSusList);
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  const setupNpcs = () => {
     dispatch({ type: ACTION_SET_NPCS, payload: (initNpcs.map((npc, idx) => {
       return {
         id: `npc_${idx}`,
@@ -26,7 +27,15 @@ export default function NpcLayer(props, ref)  {
         pos: npc.patrol[0].pos
       }
     }))})
+  }
+
+  useEffect(() => {
+    setupNpcs();
   }, [])
+
+  useEffect(() => {
+    setupNpcs();
+  }, [gameInstance])
 
   // TEMPLATE
   return (
