@@ -22,7 +22,7 @@ import {
 } from '../METHODS';
 import * as Level from '../world/levels/1/silo.json';
 import Scenery from '../world/levels/1/siloScenery.json';
-import Npcs from '../world/levels/1/siloNpc_DEV.json';
+import Npcs from '../world/levels/1/siloNpcs.json';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectPrevGameState, selectGameStateActive, selectHeroState, selectNpcStates, selectSceneryBlocks, selectObjectiveCompleted } from '../SELECTORS';
@@ -185,7 +185,7 @@ export default function GameScreen( props ) {
         <div style={{position: "absolute", width: `${GRID_SIZE}px`, height: `${GRID_SIZE}px`, left: `${Exits[0].pos.x * GRID_SIZE + 10}px`, top: `${Exits[0].pos.y * GRID_SIZE}px`, color: "#fff", fontWeight: "bold", fontSize: "24px"}}>
           <img src={arrow} style={{display: objectiveCompleted ? 'block' : 'none'}} alt="Objective Arrow" width={48} height={48} />
         </div>
-        <div className="description top left">
+        <div className="description bottom right">
           {description}
         </div>
     </HudLayer>

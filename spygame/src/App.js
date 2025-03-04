@@ -80,7 +80,7 @@ function App() {
           <div className='splash0screen-container container' style={{display: appState === APP_STATE.SPLASH ? 'block' : 'none'}}>
             <SplashScreen splashToGame={splashToGame}></SplashScreen>
           </div>
-            <div className='game-screen-container container' style={{display: appState === APP_STATE.GAME ? 'block' : 'none'}}>
+            <div className='game-screen-container container' style={{display: appState === APP_STATE.GAME || (prevAppState === APP_STATE.GAME && appState === APP_STATE.MODAL) ? 'block' : 'none'}}>
               <GameScreen appInGameState={appState === APP_STATE.GAME} handleLeaveGame={handleLeaveGame} ></GameScreen>
             </div>
           <div className='modal-layer-container container' style={{display: appState === APP_STATE.MODAL ? 'block' : 'none'}}>

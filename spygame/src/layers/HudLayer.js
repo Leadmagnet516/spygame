@@ -53,9 +53,9 @@ export default function HudLayer(props) {
       height: `${GAME_HEIGHT}px`,
       position: 'absolute'
     }}>
-      <div className='top right'>
-        <button type='button' onClick={handlePauseClick} style={{ display: gameStateActive ? 'block' : 'none'}}>[ Esc ] Pause</button>
-        <button type='button' onClick={handleResumeClick} style={{ display: gameStateActive ? 'none' : 'block'}}>[ Esc ] Resume</button>
+      <div className='bottom left'>
+        <div className="description" style={{ display: gameStateActive ? 'block' : 'none'}}>[ Esc ] Pause</div>
+        <div className="description" style={{ display: gameStateActive ? 'none' : 'block'}}>[ Esc ] Resume</div>
       </div>
       { props.children}
     </div>

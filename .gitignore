@@ -1,3 +1,5 @@
 node_modules
 package-lock.json
 package.json
+spygame/.DS_Store
+spygame/build/.DS_Store

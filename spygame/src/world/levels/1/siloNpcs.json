@@ -2,57 +2,126 @@
   {
     "kind": "guard",
     "hitPoints": 100,
-    "pos": {
-      "x": 8,
-      "y": 8
-    },
     "aim": 0,
     "fov": {
       "field": 1,
       "range": 10
-    }
+    },
+    "patrol": [
+      {
+        "habit": "Move",
+        "baseAim": 3.14,
+        "pos": {
+          "x": 5,
+          "y": 8
+        }
+      },
+      {
+        "habit": "Scan",
+        "baseAim": 0,
+        "scan": 0.5,
+        "reps": 2
+      },
+      {
+        "habit": "Move",
+        "baseAim": 0,
+        "pos": {
+          "x": 14,
+          "y": 8
+        }
+      },
+      {
+        "habit": "Scan",
+        "baseAim": 3.14,
+        "scan": 0.5,
+        "reps": 2
+      }
+    ]
   },
   {
     "kind": "guard",
     "hitPoints": 100,
-    "pos": {
-      "x": 10,
-      "y": 12
-    },
     "aim": 3.14,
     "fov": {
       "field": 1,
       "range": 10
-    }
+    },
+    "patrol": [
+      {
+        "habit": "Move",
+        "baseAim": 0,
+        "pos": {
+          "x": 12,
+          "y": 12
+        }
+      },
+      {
+        "habit": "Scan",
+        "baseAim": 3.14,
+        "scan": 0.5,
+        "reps": 2
+      },
+      {
+        "habit": "Move",
+        "baseAim": 3.14,
+        "pos": {
+          "x": 6,
+          "y": 12
+        }
+      },
+      {
+        "habit": "Scan",
+        "baseAim": 0,
+        "scan": 0.5,
+        "reps": 2
+      }
+    ]
   },
   {
     "kind": "guard",
     "hitPoints": 100,
-    "pos": {
-      "x": 19,
-      "y": 4
-    },
     "aim": 2,
     "fov": {
       "field": 1,
       "range": 10
-    }
+    },
+    "patrol": [
+      {
+        "habit": "Scan",
+        "baseAim": 2,
+        "scan": 1,
+        "reps": 2,
+        "pos": {
+          "x": 19,
+          "y": 4
+        }
+      }
+    ]
   },
   {
     "kind": "guard",
     "hitPoints": 100,
-    "pos": {
-      "x": 7,
-      "y": 2
-    },
+    
     "aim": 2.5,
     "fov": {
       "field": 1,
       "range": 10
-    }
+    },
+    "patrol": [
+      {
+        "habit": "Scan",
+        "baseAim": 1.7,
+        "scan": 0.5,
+        "reps": 2,
+        "pos": {
+          "x": 7,
+          "y": 2
+        }
+      }
+    ]
   },
   {
-    "kind": "technician",
+    "kind": "ghost",
     "hitPoints": 50,
     "pos": {
       "x": 12,
@@ -65,7 +134,7 @@
     }
   },
   {
-    "kind": "technician",
+    "kind": "ghost",
     "hitPoints": 50,
     "pos": {
       "x": 12,
@@ -78,7 +147,7 @@
     }
   },
   {
-    "kind": "technician",
+    "kind": "ghost",
     "hitPoints": 50,
     "pos": {
       "x": 10,

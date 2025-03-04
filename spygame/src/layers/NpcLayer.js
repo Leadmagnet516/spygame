@@ -24,7 +24,7 @@ export default function NpcLayer(props, ref)  {
         damageTaken: 0,
         alive: true,
         mood: ENTITY_MOOD.OK,
-        pos: npc.patrol[0].pos
+        pos: npc.pos || npc.patrol[0].pos
       }
     }))})
   }

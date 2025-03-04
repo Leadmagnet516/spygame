@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.87e09f2d.css",
+    "main.js": "/static/js/main.c7687440.js",
+    "static/js/453.a54efa9f.chunk.js": "/static/js/453.a54efa9f.chunk.js",
+    "static/media/Silo.png": "/static/media/Silo.d09ec3ad4a59b8ed0de1.png",
+    "index.html": "/index.html",
+    "main.87e09f2d.css.map": "/static/css/main.87e09f2d.css.map",
+    "main.c7687440.js.map": "/static/js/main.c7687440.js.map",
+    "453.a54efa9f.chunk.js.map": "/static/js/453.a54efa9f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.87e09f2d.css",
+    "static/js/main.c7687440.js"
+  ]
+}

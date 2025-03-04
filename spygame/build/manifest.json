@@ -1,0 +1,9 @@
+{
+  "short_name": "SpyGame",
+  "name": "SpyGame by Andrew Littlefield",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#ff9900",
+  "background_color": "#393939"
+}
