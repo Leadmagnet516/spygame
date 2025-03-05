@@ -11,11 +11,11 @@ import {
   GAME_HEIGHT,
   GAME_STATE,
   ACTION_CHANGE_GAME_STATE,
-  ACTION_OBJECTIVE_COMPLETED,
-  EVENT_OPEN_MODAL,
-  EVENT_CLOSE_MODAL,
+  ACTION_OBJECTIVE_COMPLETED, 
   EVENT_HERO_INTERACT,
   ACTION_RESET_GAME_INSTANCE,
+  ACTION_TOGGLE_MODAL,
+  MODAL_ID
 } from '../CONSTANTS';
 import {
   posIsInArea
@@ -111,20 +111,8 @@ export default function GameScreen( props ) {
   }
 
   // GAMESTATE MANAGEMENT
-  const handleOpenModal = e => {
-    if (gameStateActive) {
-      dispatch({type: ACTION_CHANGE_GAME_STATE, payload: GAME_STATE.PAUSED});
-    }
-  }
-
-  const handleCloseModal = e => {
-    if (prevGameState === GAME_STATE.ACTIVE) {
-      dispatch({type: ACTION_CHANGE_GAME_STATE, payload: GAME_STATE.ACTIVE});
-    }
-  }
-
   const handleHeroInteract = e => {
-    const { pos, aim } = e.detail;
+    const { pos } = e.detail;
 
     if (Objective.kind === "interact" && posIsInArea(pos, Objective.objectiveArea)) {
       dispatch({ type: ACTION_OBJECTIVE_COMPLETED, payload: true });
@@ -142,10 +130,8 @@ export default function GameScreen( props ) {
     if (objectiveCompleted) {
       if (heroState.pos.x === Exits[0].pos.x &&
           heroState.pos.y === Exits[0].pos.y) {
-        console.log('Escaped!')
         dispatch({ type: ACTION_CHANGE_GAME_STATE, payload: GAME_STATE.LEAVING });
-        props.handleLeaveGame();
-        resetGame();
+        dispatch({ type: ACTION_TOGGLE_MODAL, payload: MODAL_ID.OBJECTIVE_COMPLETE})
       }
       setDescription(Objective.postDescription);
     } else if (posIsInArea(heroState.pos, Objective.objectiveArea)) {
@@ -162,13 +148,9 @@ export default function GameScreen( props ) {
   // LISTENERS
   useEffect(() => {
     window.addEventListener(EVENT_HERO_INTERACT, handleHeroInteract);
-    window.addEventListener(EVENT_OPEN_MODAL, handleOpenModal);
-    window.addEventListener(EVENT_CLOSE_MODAL, handleCloseModal);
 
     return () => {
       window.removeEventListener(EVENT_HERO_INTERACT, handleHeroInteract);
-      window.removeEventListener(EVENT_OPEN_MODAL, handleOpenModal);
-      window.removeEventListener(EVENT_CLOSE_MODAL, handleCloseModal);
     }
   });
 

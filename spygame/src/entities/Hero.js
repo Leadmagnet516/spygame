@@ -4,7 +4,11 @@ import {
   EVENT_FIRE_WEAPON,
   EVENT_HERO_INTERACT,
   ACTION_UPDATE_HERO_STATE,
-  HERO_MOVE_MS
+  ACTION_CHANGE_GAME_STATE,
+  ACTION_TOGGLE_MODAL,
+  HERO_MOVE_MS,
+  MODAL_ID,
+  GAME_STATE
 } from '../CONSTANTS';
 import { AppContext } from '../App';
 import useKeyboardControl from '../hooks/useKeyboardControls';
@@ -12,8 +16,8 @@ import useMouseAim from '../hooks/useMouseAim';
 import useTickInterval from '../hooks/useTickInterval';
 import useGridPosition from '../hooks/useGridPosition';
 import { useState } from 'react';
-import { selectGameStateActive } from '../SELECTORS';
-import { useDispatch,useSelector } from 'react-redux';
+import { selectGameStateActive, selectGameInstance } from '../SELECTORS';
+import { useDispatch, useSelector } from 'react-redux';
 
 import spy_n2 from '../images/spy_-2.png';
 import spy_n1 from '../images/spy_-1.png';
@@ -31,6 +35,7 @@ export default function Hero(props, ref) {
   const dispatch = useDispatch();
   const [ flash, setFlash ] = useState(false);
   const [ showSprite, setShowSprite ] = useState(0);
+  const gameInstance = useSelector(selectGameInstance);
 
   const onMoveTick = () => {
     if (!gameStateActive || !alive) return;
@@ -88,6 +93,8 @@ export default function Hero(props, ref) {
 
   useEffect(() => {
     if(!alive) {
+      dispatch({ type: ACTION_CHANGE_GAME_STATE, payload: GAME_STATE.OVER });
+      dispatch({ type: ACTION_TOGGLE_MODAL, payload: MODAL_ID.GAME_OVER });
       return(() => {})
     }
     handleHit();
@@ -98,6 +105,10 @@ export default function Hero(props, ref) {
       setShowSprite(Math.round(aim * (4 / Math.PI)));
     }
   }, [aim])
+
+  useEffect(() => {
+    updatePos({hor: 0, ver: 0}, false, initPos)
+  }, [gameInstance])
 
   return (
     <div className='entity hero' style={{

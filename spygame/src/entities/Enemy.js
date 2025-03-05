@@ -16,7 +16,7 @@ import {
 import { useEffect, useState } from 'react';
 import useGridPosition from '../hooks/useGridPosition';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectGameStateActive, selectgameInstance } from '../SELECTORS';
+import { selectGameStateActive, selectGameInstance } from '../SELECTORS';
 import useSusDetection from '../hooks/useSusDetection';
 import useTickInterval from '../hooks/useTickInterval';
 
@@ -40,7 +40,7 @@ export default function Enemy(props) {
   const [ flash, setFlash ] = useState(false);
   const [ aim, setAim ] = useState(3.14);
   const gameStateActive = useSelector(selectGameStateActive);
-  const gameInstance = useSelector(selectgameInstance);
+  const gameInstance = useSelector(selectGameInstance);
   const dispatch = useDispatch();
   const { checkSus } = useSusDetection();
   const [ step, setStep ] = useState(0);

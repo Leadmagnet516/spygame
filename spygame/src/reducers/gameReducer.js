@@ -1,5 +1,6 @@
 import {
   GAME_STATE,
+  ACTION_TOGGLE_PAUSE,
   ACTION_CHANGE_GAME_STATE,
   ACTION_RESET_GAME_INSTANCE,
   ACTION_UPDATE_HERO_STATE,
@@ -8,7 +9,9 @@ import {
   ACTION_UPDATE_NPC_STATE,
   ACTION_SET_SCENERY_BLOCKS,
   ACTION_OBJECTIVE_COMPLETED,
-  SUS_LEVEL
+  ACTION_TOGGLE_MODAL,
+  SUS_LEVEL,
+  MODAL_ID
 } from '../CONSTANTS';
 
 const initialGameState = {
@@ -38,7 +41,8 @@ const initialGameState = {
         y: 0
       }
     }
-  ]
+  ],
+  activeModalId: null
 }
 
 const damagedEntity = (entity, damage) => {
@@ -59,12 +63,18 @@ const damagedEntity = (entity, damage) => {
 
 export default function gameReducer(state = initialGameState, action) {
   switch (action.type) {
+    case ACTION_TOGGLE_PAUSE:
+      return { ...state,
+              prevGameState: state.gameState,
+              gameState: state.gameState === GAME_STATE.PAUSED ? GAME_STATE.ACTIVE : GAME_STATE.PAUSED,
+              activeModalId: state.gameState === GAME_STATE.PAUSED ? null : MODAL_ID.PAUSE
+              }
+
     case ACTION_CHANGE_GAME_STATE:
-      const prevGameState = state.gameState;
-      return { ...state, prevGameState, gameState: action.payload }
+      return { ...state, prevGameState: state.gameState, gameState: action.payload }
     
     case ACTION_RESET_GAME_INSTANCE:
-      return { ...initialGameState, hudMarkers: state.hudMarkers, sceneryBlocks: state.sceneryBlocks, gameInstance: state.gameInstance + 1 }
+      return { ...initialGameState, gameState: state.gameState, hudMarkers: state.hudMarkers, sceneryBlocks: state.sceneryBlocks, gameInstance: state.gameInstance + 1 }
 
     case ACTION_UPDATE_HERO_STATE :
       const updateSusList = state.susList.map(sus => {
@@ -127,6 +137,9 @@ export default function gameReducer(state = initialGameState, action) {
 
     case ACTION_OBJECTIVE_COMPLETED :
       return { ...state, objectiveCompleted: action.payload}
+
+    case ACTION_TOGGLE_MODAL :
+      return { ...state, gameState: state.gameState === GAME_STATE.ACTIVE ? GAME_STATE.PAUSED : state.gameState, activeModalId: action.payload || null };
 
     default:
       return state

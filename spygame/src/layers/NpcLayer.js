@@ -4,14 +4,14 @@ import {
   ENTITY_MOOD,
   ACTION_SET_NPCS
  } from '../CONSTANTS';
-import { selectgameInstance, selectNpcStates, selectSusList } from '../SELECTORS';
+import { selectGameInstance, selectNpcStates, selectSusList } from '../SELECTORS';
 import Enemy from '../entities/Enemy';
 import { useEffect  } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function NpcLayer(props, ref)  {
   const { initNpcs, boundaryCollision, sceneryCollision, entityCollision, resetHash } = props;
-  const gameInstance = useSelector(selectgameInstance);
+  const gameInstance = useSelector(selectGameInstance);
   const npcStates = useSelector(selectNpcStates);
   const susList = useSelector(selectSusList);
   const dispatch = useDispatch();

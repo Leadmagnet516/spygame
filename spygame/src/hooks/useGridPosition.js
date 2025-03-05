@@ -18,9 +18,9 @@ export default function useGridPosition(id, initPos, collisionTestCallbacks) {
     return collision;
   }
 
-  const updatePos = (movement, enableSlipping = false) => {
+  const updatePos = (movement, enableSlipping = false, forcedNewPos) => {
     const { hor, ver } = movement;
-    const newPos =  {x: pos.x + Math.round(hor), y: pos.y + Math.round(ver)};
+    const newPos =  forcedNewPos || {x: pos.x + Math.round(hor), y: pos.y + Math.round(ver)};
     const originalCollision = testCollisions(newPos, collisionTestCallbacks);
     let slipPos = {}, slipCollision = ''
 

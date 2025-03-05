@@ -49,6 +49,7 @@ export const EVENT_CHANGE_GAME_STATE = 'ChangeGamestate';
 export const EVENT_HERO_INTERACT = 'HeroInteract';
 
 // REDUX ACTIONS
+export const ACTION_TOGGLE_PAUSE = 'game/togglePause';
 export const ACTION_CHANGE_GAME_STATE = 'game/changeState';
 export const ACTION_RESET_GAME_INSTANCE = 'game/resetGameInstance';
 export const ACTION_UPDATE_HERO_STATE = 'game/changeHeroState';
@@ -57,8 +58,11 @@ export const ACTION_RECORD_ENTITY_DAMAGE = 'game/recordEntityDamage';
 export const ACTION_SET_NPCS = 'game/setNpcs';
 export const ACTION_SET_SCENERY_BLOCKS = 'game/setSceneryBlocks';
 export const ACTION_OBJECTIVE_COMPLETED ='game/objectiveCompleted';
+export const ACTION_TOGGLE_MODAL = 'game/toggleModal';
 
-// UI EVENTS
-export const EVENT_OPEN_MODAL = 'OpenModal';
-export const EVENT_CLOSE_MODAL = 'CloseModal';
-
+// MODALS
+export const MODAL_ID = {
+  PAUSE: 'PauseModal',
+  OBJECTIVE_COMPLETE: 'CompleteModal',
+  GAME_OVER: 'GameOverModal'
+}

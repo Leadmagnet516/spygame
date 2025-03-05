@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { ACTION_TOGGLE_PAUSE } from '../CONSTANTS';
+import { useDispatch } from 'react-redux';
 
 export default function useKeyboardControl() {
   const [ leftKeyDown, setLeftKeyDown ] = useState(false);
@@ -6,6 +8,7 @@ export default function useKeyboardControl() {
   const [ upKeyDown, setUpKeyDown ] = useState(false);
   const [ downKeyDown, setDownKeyDown ] = useState(false);
   const [ spaceKeyDown, setSpaceKeyDown ] = useState(false);
+  const dispatch = useDispatch();
 
   const handleKeyDown = e => {
     if ((e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') && !leftKeyDown) {
@@ -22,6 +25,9 @@ export default function useKeyboardControl() {
     }
     if (e.code === 'Space' && !spaceKeyDown) {
       setSpaceKeyDown(true);
+    }
+    if (e.key === 'Escape') {
+      dispatch({type: ACTION_TOGGLE_PAUSE});
     }
   }
 
